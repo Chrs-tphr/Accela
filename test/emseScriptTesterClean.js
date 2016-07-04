@@ -1,15 +1,15 @@
-var myCapId = "replaceWithAltId";
+var myCapId = "replaceWithAltID";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
 /* ASA  */  //var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
 /* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
-/* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "Application Acceptance"; wfStatus = "Accepted - Plan Review Not Req"; wfDateMMDDYYYY = "03/29/2016";
-/* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "Permit Issuance"; wfStatus = "Issued";  wfDateMMDDYYYY = "01/27/2015";
-/* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "Passed"; inspResultComment = "Comment";  inspType = "Building Final"; wfTask = "Inspection"
-/* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "Roofing"
-/* ISB ALT */ //var eventName = "InspectionMultipleScheduleBefore"; inspType = "Set Backs"
+/* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
+/* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
+/* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
+/* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "inspName";
+/* ISB ALT */ //var eventName = "InspectionMultipleScheduleBefore"; inspType = "inspName"; wfTask = "taskName"; balanceDue = 0;
 /* PRA  */  //var eventName = "PaymentReceiveAfter";  
 /* ASIUA */ //var eventName = " ApplicationSpecificInfoUpdateAfter";
 
