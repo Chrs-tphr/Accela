@@ -1,4 +1,4 @@
-var myCapId = "replaceWithAltID";
+var myCapId = "RNEW-20160009";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -11,7 +11,7 @@ var myUserId = "ADMIN";
 /* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "inspName";
 /* ISB ALT */ //var eventName = "InspectionMultipleScheduleBefore"; inspType = "inspName"; wfTask = "taskName"; balanceDue = 0;
 /* PRA  */  //var eventName = "PaymentReceiveAfter";  
-/* ASIUA */ //var eventName = "ApplicationSpecificInfoUpdateAfter";
+/* ASIUA */ var eventName = "ApplicationSpecificInfoUpdateAfter";
 
 var useProductScript = true;  // set to true to use the "productized" master scripts (events->master scripts), false to use scripts from (events->scripts)
 var runEvent = true; // set to true to simulate the event and run all std choices/scripts for the record type.  
@@ -26,7 +26,24 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 
+	function updateCertEqListFromRenewal(){
+		logDebug("Trying to get cap id from license");
+		var capID = getCapId(); logDebug("getCapId returns: "+capID);
+		var pCapId = getParent(); logDebug("getParent returns: "+pCapId);
+		var partialCapID = getPartialCapID(capID); logDebug("getPartialCapID returns: "+partialCapID);
+		var parentLicenseCAPID = getParentLicenseCapID(capID); logDebug("getParentLicenseCapID returns: "+parentLicenseCAPID);
+//		if (parentLicenseCAPID != null){
+//			logDebug("Parent CAP ID :" + parentLicenseCAPID);
+//			removeASITable("EQUIPMENT LIST", parentLicenseCAPID);
+//			copyASITables(capId, parentLicenseCAPID);
+//			var pAltId = parentLicenseCAPID.getCustomID();
+//			logDebug("Copied ASIT from "+capId+" to "+pAltId);
+//		}else{
+//			logDebug("Could not get pCapId for Renewal");
+//		}
+	}
 	
+	updateCertEqListFromRenewal();
 	
 //INSERT TEST CODE END
 	}
