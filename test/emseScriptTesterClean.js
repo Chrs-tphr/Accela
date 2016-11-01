@@ -12,6 +12,8 @@ var myUserId = "ADMIN";
 /* ISB ALT */ //var eventName = "InspectionMultipleScheduleBefore"; inspType = "inspName"; wfTask = "taskName"; balanceDue = 0;
 /* PRA  */  //var eventName = "PaymentReceiveAfter";  
 /* ASIUA */ //var eventName = "ApplicationSpecificInfoUpdateAfter";
+/* WTUB */  //var eventName = "WorkflowAdhocTaskUpdateBefore";
+/* WTUA */  //var eventName = "WorkflowAdhocTaskUpdateAfter";
 
 var useProductScript = true;  // set to true to use the "productized" master scripts (events->master scripts), false to use scripts from (events->scripts)
 var runEvent = true; // set to true to simulate the event and run all std choices/scripts for the record type.  
