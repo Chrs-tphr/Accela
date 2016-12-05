@@ -14,6 +14,7 @@ var myUserId = "ADMIN";
 /* ASIUA */ //var eventName = "ApplicationSpecificInfoUpdateAfter";
 /* WTUB */  //var eventName = "WorkflowAdhocTaskUpdateBefore";
 /* WTUA */  //var eventName = "WorkflowAdhocTaskUpdateAfter";
+/* DUA */  //var eventName = "DocumentUploadAfter";
 
 var useProductScript = true;  // set to true to use the "productized" master scripts (events->master scripts), false to use scripts from (events->scripts)
 var runEvent = true; // set to true to simulate the event and run all std choices/scripts for the record type.  
@@ -28,7 +29,7 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 
-
+	
 
 //INSERT TEST CODE END
 	}
