@@ -3,9 +3,9 @@ var myUserId = "ADMIN";
 var RefParcelNumber = "2809002007";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
-/* ASA  */  var eventName = "ApplicationSubmitAfter";
+/* ASA  */  //var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
-/* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
+/* ASUA  */  var eventName = "ApplicationStatusUpdateAfter";
 /* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
 /* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
