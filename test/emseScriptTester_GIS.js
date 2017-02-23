@@ -1,4 +1,4 @@
-var myCapId = "replaceWithAltID";
+var myCapId = "";
 var myUserId = "ADMIN";
 var RefParcelNumber = "2809002007";
 
@@ -142,72 +142,79 @@ try {
 	
 	//council member property check
 	if(refProximity("SANTACLARITA","City Council Parcels",500)){
-		var cType = "";
-		var cStatus = "";
-		var cDesc = "";
-		var cComment = "";
-		var cImpact = "";
-		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+		logDebug("Parcel is within 500 feet of Council Member Parcel");
+//		var cType = "";
+//		var cStatus = "";
+//		var cDesc = "";
+//		var cComment = "";
+//		var cImpact = "";
+//		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
 	}
 
 	//school check
 	if(refProximity("SANTACLARITA","Schools",1000)){
-		var cType = "";
-		var cStatus = "";
-		var cDesc = "";
-		var cComment = "";
-		var cImpact = "";
-		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+		logDebug("Parcel is within 1000 feet of a school");
+//		var cType = "";
+//		var cStatus = "";
+//		var cDesc = "";
+//		var cComment = "";
+//		var cImpact = "";
+//		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
 	}
 
 	//residential check
 	 if(refProximityToAttribute("SANTACLARITA","ParcelOutlines",300,"feet","ZONETYPE","RESIDENTIAL")){
-		var cType = "";
-		var cStatus = "";
-		var cDesc = "";
-		var cComment = "";
-		var cImpact = "";
-		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+			logDebug("Parcel is within 300 feet of residential");
+//			var cType = "";
+//			var cStatus = "";
+//			var cDesc = "";
+//			var cComment = "";
+//			var cImpact = "";
+//			addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
 	}
 
 	//city boundary check
 	if(refGetGISInfo("SANTACLARITA","ParcelOutlines", "Juris") != "CITY"){
-		var cType = "";
-		var cStatus = "";
-		var cDesc = "";
-		var cComment = "";
-		var cImpact = "";
-		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+		logDebug("Parcel is not in the city");
+//		var cType = "";
+//		var cStatus = "";
+//		var cDesc = "";
+//		var cComment = "";
+//		var cImpact = "";
+//		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
 	}
 
 	//flood zone High check
 	if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "High"){
-		var cType = "";
-		var cStatus = "";
-		var cDesc = "";
-		var cComment = "";
-		var cImpact = "";
-		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+		logDebug("Parcel is in a HIGH risk Flood Zone");
+//		var cType = "";
+//		var cStatus = "";
+//		var cDesc = "";
+//		var cComment = "";
+//		var cImpact = "";
+//		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
 	}
 
 	//flood zone Moderate check
 	if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "Moderate"){
-		var cType = "";
-		var cStatus = "";
-		var cDesc = "";
-		var cComment = "";
-		var cImpact = "";
-		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+		logDebug("Parcel is in a MODERATE risk Flood Zone");
+//		var cType = "";
+//		var cStatus = "";
+//		var cDesc = "";
+//		var cComment = "";
+//		var cImpact = "";
+//		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
 	}
 
 	//flood zone Moderate check
 	if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "Low"){
-		var cType = "";
-		var cStatus = "";
-		var cDesc = "";
-		var cComment = "";
-		var cImpact = "";
-		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+		logDebug("Parcel is in a LOW risk Flood Zone");
+//		var cType = "";
+//		var cStatus = "";
+//		var cDesc = "";
+//		var cComment = "";
+//		var cImpact = "";
+//		addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
 	}
 
 //INSERT TEST CODE END
