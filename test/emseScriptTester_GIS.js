@@ -1,7 +1,5 @@
 var myCapId = "";
 var myUserId = "ADMIN";
-//var RefParcelNumber = "2809002007";
-var RefParcelNumber = "2826005067";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
 /* ASA  */  //var eventName = "ApplicationSubmitAfter";
@@ -30,7 +28,9 @@ var runEvent = false; // set to true to simulate the event and run all std choic
 try {
 	showDebug = true;
 //INSERT TEST CODE START
-
+	
+	
+		
 	function refGetGISInfo(svc,layer,attributename){
 		// use buffer info to get info on the current object by using distance 0
 		var distanceType = "feet";
@@ -144,7 +144,7 @@ try {
 	function refParcelConditionExists(condtype){
 		var pcResult = aa.parcelCondition.getParcelConditions(RefParcelNumber);
 		if(!pcResult.getSuccess()){
-			logDebug("**WARNING: error getting parcel conditions : " + pcResult.getErrorMessage());
+//			logDebug("**WARNING: error getting parcel conditions : " + pcResult.getErrorMessage());
 			return false;
 		}
 		pcs = pcResult.getOutput();
@@ -155,7 +155,7 @@ try {
 	function removeRefParcelCondition(parcelNum,cType,cDesc){
 		var pcResult = aa.parcelCondition.getParcelConditions(parcelNum);
 		if(!pcResult.getSuccess()){
-			logDebug("**WARNING: error getting parcel conditions : " + pcResult.getErrorMessage());
+//			logDebug("**WARNING: error getting parcel conditions : " + pcResult.getErrorMessage());
 			return false;
 		}
 		var pcs = pcResult.getOutput();
@@ -171,88 +171,128 @@ try {
 		}
 	}
 	
-	var cType = "Parcel";
-	var cStatus = "Applied";
-	var cDesc = "";
-	var cComment = "";
-	var cImpact = "Notice";
+	function getUniqueRefParcelNumbers(){
+		var refParcelList = new Array();
+		var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
+		var ds = initialContext.lookup("java:/AA");
+		var conn = ds.getConnection(); logDebug("Creating DB Connection");
+		var SQL = "SELECT L1_PARCEL_NBR as return_string FROM L3PARCEL INNER JOIN RSERV_PROV ON RSERV_PROV.APO_SRC_SEQ_NBR = L3PARCEL.SOURCE_SEQ_NBR WHERE RSERV_PROV.SERV_PROV_CODE = 'SANTACLARITA'";
+		var dbStmt = conn.prepareStatement(SQL); logDebug("Preparing SQL");
+		dbStmt.executeQuery(); logDebug("Executing Query");
+		results = dbStmt.getResultSet();
+		while(results.next()){
+			refParcelList.push(results.getString("return_string"))
+		}
+		logDebug("Reference Parcel Numbers Found: "+refParcelList.length);
+		dbStmt.close(); logDebug("Query Complete");
+		conn.close(); logDebug("DB Connection Closed");
+		return refParcelList;
+	}
 	
-	//council member property check
-	cDesc = "500 feet of Council Member Parcel";
-	cComment = "Parcel is within 500 feet of Council Member Parcel";
-	if(refProximity("SANTACLARITA","City Council Parcels",500)){
-		logDebug("Parcel is within 500 feet of Council Member Parcel");
-		if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
-		else logDebug("Condition: "+cDesc+", already exists. No update made!");
-	}else if(!refProximity("SANTACLARITA","City Council Parcels",500)){
-		removeRefParcelCondition(RefParcelNumber,cType,"500 feet of Council Member Parcel");
-	}
+	var uRPNums = getUniqueRefParcelNumbers();
+	
+	logDebug("The first 10 Reference Parcel results are listed below:");
+	
+	for(i=0; i<uRPNums.length; i++){
+		var RefParcelNumber = uRPNums[i];
+//		if(RefParcelNumber != ""){
+		if(matches(RefParcelNumber,"2833001063","2833008031","2842007058","2812076001","2839011021","2826144027","2859008028","2866012016","2811065900")){
+			logDebug("*** Parcel #: "+RefParcelNumber);
+			var cType = "Parcel";
+			var cStatus = "Applied";
+			var cDesc = "";
+			var cComment = "";
+			var cImpact = "Notice";
+			
+			//elected official property check
+			cDesc = "500 feet of Elected Official Parcel";
+			cComment = "Parcel is within 500 feet of Elected Official Parcel";
+			if(refProximity("SANTACLARITA","City Council Parcels",500)){
+				logDebug("Parcel is within 500 feet of Elected Official Parcel");
+				if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+				else logDebug("Condition: "+cDesc+", already exists. No update made!");
+			}else if(!refProximity("SANTACLARITA","City Council Parcels",500)){
+				//***ADD updateParcelConditionStatus
+				removeRefParcelCondition(RefParcelNumber,cType,"500 feet of Elected Official Parcel");
+			}
 
-	//school check
-	cDesc = "1000 feet of School";
-	cComment = "Parcel is within 1000 feet of a school";
-	if(refProximity("SANTACLARITA","Schools",1000)){
-		logDebug("Parcel is within 1000 feet of a school");
-		if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
-		else logDebug("Condition: "+cDesc+", already exists. No update made!");
-	}else if(!refProximity("SANTACLARITA","Schools",1000)){
-		removeRefParcelCondition(RefParcelNumber,cType,cDesc);
-	}
+			//school check
+			cDesc = "1000 feet of School";
+			cComment = "Parcel is within 1000 feet of a school";
+			if(refProximity("SANTACLARITA","Schools",1000)){
+				logDebug("Parcel is within 1000 feet of a school");
+				if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+				else logDebug("Condition: "+cDesc+", already exists. No update made!");
+			}else if(!refProximity("SANTACLARITA","Schools",1000)){
+				//***ADD updateParcelConditionStatus
+				removeRefParcelCondition(RefParcelNumber,cType,cDesc);
+			}
 
-	//residential check
-	cDesc = "300 feet of Residential";
-	cComment = "Parcel is within 300 feet of residential";
-	 if(refProximityToAttribute("SANTACLARITA","ParcelOutlines",300,"feet","ZONETYPE","RESIDENTIAL")){
-		logDebug("Parcel is within 300 feet of residential");
-		if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
-		else logDebug("Condition: "+cDesc+", already exists. No update made!");
-	}else if(!refProximityToAttribute("SANTACLARITA","ParcelOutlines",300,"feet","ZONETYPE","RESIDENTIAL")){
-		removeRefParcelCondition(RefParcelNumber,cType,"");
-	}
+			//residential check
+			cDesc = "300 feet of Residential";
+			cComment = "Parcel is within 300 feet of residential";
+			 if(refProximityToAttribute("SANTACLARITA","ParcelOutlines",300,"feet","ZONETYPE","RESIDENTIAL")){
+				logDebug("Parcel is within 300 feet of residential");
+				if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+				else logDebug("Condition: "+cDesc+", already exists. No update made!");
+			}else if(!refProximityToAttribute("SANTACLARITA","ParcelOutlines",300,"feet","ZONETYPE","RESIDENTIAL")){
+				//***ADD updateParcelConditionStatus
+				removeRefParcelCondition(RefParcelNumber,cType,"");
+			}
 
-	//city boundary check
-	cDesc = "Not in City";
-	cComment = "Parcel is not located within Santa Clarita city limits";
-	if(refGetGISInfo("SANTACLARITA","ParcelOutlines", "Juris") != "CITY"){
-		logDebug("Parcel is not in the city");
-		if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
-		else logDebug("Condition: "+cDesc+", already exists. No update made!");
-	}else if(refGetGISInfo("SANTACLARITA","ParcelOutlines", "Juris") == "CITY"){
-		removeRefParcelCondition(RefParcelNumber,cType,"");
-	}
+			//city boundary check
+			cDesc = "Not in City";
+			cComment = "Parcel is not located within Santa Clarita city limits";
+			if(refGetGISInfo("SANTACLARITA","ParcelOutlines", "Juris") != "CITY"){
+				logDebug("Parcel is not in the city");
+				if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+				else logDebug("Condition: "+cDesc+", already exists. No update made!");
+			}else if(refGetGISInfo("SANTACLARITA","ParcelOutlines", "Juris") == "CITY"){
+				//***ADD updateParcelConditionStatus
+				removeRefParcelCondition(RefParcelNumber,cType,"");
+			}
 
-	//flood zone High check
-	cDesc = "HIGH risk Flood Zone";
-	cComment = "Parcel is in a HIGH risk Flood Zone";
-	if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "High"){
-		logDebug("Parcel is in a HIGH risk Flood Zone");
-		if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
-		else logDebug("Condition: "+cDesc+", already exists. No update made!");
-	}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "High"){
-		removeRefParcelCondition(RefParcelNumber,cType,"");
-	}
+			//flood zone High check
+			cDesc = "High risk Flood Zone";
+			cComment = "Parcel is in a HIGH risk Flood Zone";
+			if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "High"){
+				logDebug("Parcel is in a HIGH risk Flood Zone");
+				if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+				else logDebug("Condition: "+cDesc+", already exists. No update made!");
+			}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "High"){
+				//***ADD updateParcelConditionStatus
+				removeRefParcelCondition(RefParcelNumber,cType,"");
+			}
 
-	//flood zone Moderate check
-	cDesc = "MODERATE risk Flood Zone";
-	cComment = "Parcel is in a MODERATE risk Flood Zone";
-	if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "Moderate"){
-		logDebug("Parcel is in a MODERATE risk Flood Zone");
-		if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
-		else logDebug("Condition: "+cDesc+", already exists. No update made!");
-	}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "Moderate"){
-		removeRefParcelCondition(RefParcelNumber,cType,"");
-	}
+			//flood zone Moderate-to-Low check
+			cDesc = "Moderate-to-Low risk Flood Zone";
+			cComment = "Parcel is in a Moderate-to-Low risk Flood Zone";
+			if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "Moderate-to-Low"){
+				logDebug("Parcel is in a Moderate-to-Low risk Flood Zone");
+				if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+				else logDebug("Condition: "+cDesc+", already exists. No update made!");
+			}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "Moderate-to-Low"){
+				//***ADD updateParcelConditionStatus
+				removeRefParcelCondition(RefParcelNumber,cType,"");
+			}
 
-	//flood zone Moderate check
-	cDesc = "LOW risk Flood Zone";
-	cComment = "Parcel is in a LOW risk Flood Zone";
-	if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "Low"){
-		logDebug("Parcel is in a LOW risk Flood Zone");
-		if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
-		else logDebug("Condition: "+cDesc+", already exists. No update made!");
-	}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "Low"){
-		removeRefParcelCondition(RefParcelNumber,cType,"");
+			/*
+			 * do not add to dev
+			 //flood zone Moderate check
+			cDesc = "LOW risk Flood Zone";
+			cComment = "Parcel is in a LOW risk Flood Zone";
+			if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") == "Low"){
+				logDebug("Parcel is in a LOW risk Flood Zone");
+				if(!refParcelConditionExists(cDesc)) addParcelCondition(RefParcelNumber,cType,cStatus,cDesc,cComment,cImpact);
+				else logDebug("Condition: "+cDesc+", already exists. No update made!");
+			}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "Low"){
+				//***ADD updateParcelConditionStatus
+				removeRefParcelCondition(RefParcelNumber,cType,"");
+			}*/
+		}
 	}
+	
+	
 
 //INSERT TEST CODE END
 	}
