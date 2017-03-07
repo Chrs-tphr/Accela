@@ -1,11 +1,11 @@
-var myCapId = "BLD17-00078";
+var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
 /* ASA  */  //var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
 /* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
-/* WTUA */  var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
+/* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
 /* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
 /* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "inspName";
@@ -28,166 +28,9 @@ var runEvent = false; // set to true to simulate the event and run all std choic
 try {
 	showDebug = true;
 //INSERT TEST CODE START
-
-	function setAgencyTsiInfo(){
-		var agencyName;
-		//AQMD Asbestos Demo/Removal
-		agencyName == "AQMD Asbestos Demo/Removal";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//AQMD Small Business Assistance
-		agencyName == "AQMD Small Business Assistance";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//CAL/OSHA
-		agencyName == "CAL/OSHA";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//Castaic Lake Water Agency
-		agencyName == "Castaic Lake Water Agency";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//City Address Assignment
-		agencyName == "City Address Assignment";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//City Engineering Services
-		agencyName == "City Engineering Services";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//City Environmental Services
-		agencyName == "City Environmental Services";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//City Landscape Maint Division
-		agencyName == "City Landscape Maint Division";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//City Planning
-		agencyName == "City Planning";
-		editTaskSpecific(agencyName,"Address","23920 VALENCIA BOULEVARD, SUITE 140, SANTA CLARITA, CA 91355");
-		editTaskSpecific(agencyName,"Hours","7:30 AM - 5:30 PM (M-TH), 8 AM - 5 PM (F)");
-		editTaskSpecific(agencyName,"Phone Number","(661)255-4330");
-		editTaskSpecific(agencyName,"Requirements","PLANNING APPROVAL STAMP ON FINAL PLANS REQUIRED");
-		
-		//City Urban Forestry Oaks
-		agencyName == "City Urban Forestry Oaks";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//County Env Health Septic
-		agencyName == "County Env Health Septic";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//County Fire Petrochem
-		agencyName == "County Fire Petrochem";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//County Fire Prevention
-		agencyName == "County Fire Prevention";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//County Health Radiation Mgmt
-		agencyName == "County Health Radiation Mgmt";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//County Health Services Food
-		agencyName == "County Health Services Food";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//County Industrial Waste
-		agencyName == "County Industrial Waste";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//County Recreational Waters
-		agencyName == "County Recreational Waters";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//County Sanitation District
-		agencyName == "County Sanitation District";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//Dept of Consv Oil Gas Geo
-		agencyName == "Dept of Consv Oil Gas Geo";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//School District Elementary
-		agencyName == "School District Elementary";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//School District Wm S Hart
-		agencyName == "School District Wm S Hart";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-		
-		//Southern California Edison
-		agencyName == "Southern California Edison";
-		editTaskSpecific(agencyName,"Address","");
-		editTaskSpecific(agencyName,"Hours","");
-		editTaskSpecific(agencyName,"Phone Number","");
-		editTaskSpecific(agencyName,"Requirements","");
-	}
 	
-	setAgencyTsiInfo();
-
+	
+	
 //INSERT TEST CODE END
 	}
 catch (err) {
