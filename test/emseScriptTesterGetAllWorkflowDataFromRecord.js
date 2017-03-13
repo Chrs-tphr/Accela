@@ -1,4 +1,4 @@
-var myCapId = "BLD17-00083";
+var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
