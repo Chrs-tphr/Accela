@@ -69,13 +69,13 @@ try {
 			var thisStepNumber = thisTask.getStepNumber(); logDebug("   StepNumber: "+thisStepNumber);
 			var thisTaskDescription = thisTask.getTaskDescription(); logDebug("   TaskDescription: "+thisTaskDescription);
 			var thisWorkflowId = thisTask.getWorkflowId(); logDebug("   WorkflowId: "+thisWorkflowId);
-			var thisIsRestrictView4ACA = thisTaskItem.getIsRestrictView4ACA(); logDebug("   IsRestrictView4ACA: "+thisIsRestrictView4ACA);
-			var thisRestrictRole = thisTaskItem.getRestrictRole(); logDebug("   RestrictRole: "+thisRestrictRole);
-			var thisDisplayInACA = thisTaskItem.getDisplayInACA(); logDebug("   DisplayInACA: "+thisDisplayInACA);
-			var thisParallelInd  = thisTaskItem.getParallelInd(); logDebug("   ParallelInd: "+thisParallelInd);
 			//getTaskItem returns the TaskItemScriptModel object
 			var thisTaskItem = thisTask.getTaskItem();
 			if(thisTaskItem){
+				var thisIsRestrictView4ACA = thisTaskItem.getIsRestrictView4ACA(); logDebug("   IsRestrictView4ACA: "+thisIsRestrictView4ACA);
+				var thisRestrictRole = thisTaskItem.getRestrictRole(); logDebug("   RestrictRole: "+thisRestrictRole);
+				var thisDisplayInACA = thisTaskItem.getDisplayInACA(); logDebug("   DisplayInACA: "+thisDisplayInACA);
+				var thisParallelInd  = thisTaskItem.getParallelInd(); logDebug("   ParallelInd: "+thisParallelInd);
 				var thisStaffUser = aa.cap.getStaffByUser(thisTaskItem.getSysUser().getFirstName(),thisTaskItem.getSysUser().getMiddleName(),thisTaskItem.getSysUser().getLastName(),thisTaskItem.getSysUser().toString()).getOutput(); logDebug("   thisStaffUser: "+thisStaffUser);
 				if(thisStaffUser){
 					var thisStaffUserName = thisStaffUser.toString().split("/").pop().trim(); logDebug("   thisStaffUserName: "+thisStaffUserName);
