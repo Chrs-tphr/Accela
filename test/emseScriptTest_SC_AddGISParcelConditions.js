@@ -204,7 +204,7 @@ try{
 				else logDebug("Condition: "+cDesc+", already exists. No update made!");
 			}else if(!refProximity("SANTACLARITA","City Council Parcels",500)){
 				//***ADD updateParcelConditionStatus
-				removeRefParcelCondition(RefParcelNumber,cType,"500 feet of Elected Official Parcel");
+				removeRefParcelCondition(RefParcelNumber,cType,cDesc);
 			}
 
 			//school check
@@ -228,7 +228,7 @@ try{
 				else logDebug("Condition: "+cDesc+", already exists. No update made!");
 			}else if(!refProximityToAttribute("SANTACLARITA","ParcelOutlines",300,"feet","ZONETYPE","RESIDENTIAL")){
 				//***ADD updateParcelConditionStatus
-				removeRefParcelCondition(RefParcelNumber,cType,"");
+				removeRefParcelCondition(RefParcelNumber,cType,cDesc);
 			}
 
 			//city boundary check
@@ -240,7 +240,7 @@ try{
 				else logDebug("Condition: "+cDesc+", already exists. No update made!");
 			}else if(refGetGISInfo("SANTACLARITA","ParcelOutlines", "Juris") == "CITY"){
 				//***ADD updateParcelConditionStatus
-				removeRefParcelCondition(RefParcelNumber,cType,"");
+				removeRefParcelCondition(RefParcelNumber,cType,cDesc);
 			}
 
 			//flood zone High check
@@ -252,7 +252,7 @@ try{
 				else logDebug("Condition: "+cDesc+", already exists. No update made!");
 			}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "High"){
 				//***ADD updateParcelConditionStatus
-				removeRefParcelCondition(RefParcelNumber,cType,"");
+				removeRefParcelCondition(RefParcelNumber,cType,cDesc);
 			}
 
 			//flood zone Moderate-to-Low check
@@ -264,7 +264,7 @@ try{
 				else logDebug("Condition: "+cDesc+", already exists. No update made!");
 			}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "Moderate-to-Low"){
 				//***ADD updateParcelConditionStatus
-				removeRefParcelCondition(RefParcelNumber,cType,"");
+				removeRefParcelCondition(RefParcelNumber,cType,cDesc);
 			}
 
 			/*
@@ -278,7 +278,7 @@ try{
 				else logDebug("Condition: "+cDesc+", already exists. No update made!");
 			}else if(refGetGISInfo("SANTACLARITA","Flood Zone (DFIRM)","RISK") != "Low"){
 				//***ADD updateParcelConditionStatus
-				removeRefParcelCondition(RefParcelNumber,cType,"");
+				removeRefParcelCondition(RefParcelNumber,cType,cDesc);
 			}*/
 		}
 	}
