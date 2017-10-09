@@ -29,15 +29,6 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
-	function viewObj(obj){
-		for(var key in obj){
-			if(typeof obj[key] == 'function')
-				logDebug(key + '()');
-			else
-				logDebug(key + ": " + obj[key]);
-		}
-	}
-	
 	function doesContractorHaveValidBusinessLicense(capId){
 		var capLicenseResult = aa.licenseScript.getLicenseProf(capId);
 		if(capLicenseResult.getSuccess()){
@@ -46,12 +37,9 @@ try {
 				if(capLicenseArr.length > 0){
 					licProfScriptModel = capLicenseArr[0];
 					licModel = licProfScriptModel.getLicenseProfessionalModel();
-					rlpId = licProfScriptModel.getLicenseNbr();
-//					logDebug("Current transactional license number " + rlpId);
 					
 					//lp info
 					var lpBusinessLicense = licProfScriptModel.getBusinessLicense();
-					logDebug("lpBusinessLicense: "+lpBusinessLicense);
 										
 					if(lpBusinessLicense){
 						//get business license record
@@ -76,7 +64,7 @@ try {
 		}
 		return false;
 	}
-	
+//	
 	function doesContractorHaveClassCode(capId,reqCCode){//reqCCode = comma separated, no space.
 		var reqCCode = reqCCode.split(",");
 		var capLicenseResult = aa.licenseScript.getLicenseProf(capId);
@@ -117,7 +105,7 @@ try {
 	}
 	
 	var conBL = doesContractorHaveValidBusinessLicense(capId);
-	var conCC = doesContractorHaveClassCode(capId,"A,C10");
+	var conCC = doesContractorHaveClassCode(capId,"A,C20");
 	
 	logDebug("conBL: "+conBL);
 	logDebug("conCC: "+conCC);

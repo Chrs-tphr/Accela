@@ -1,8 +1,8 @@
-var myCapId = "replaceWithAltId";
+var myCapId = "APP-20170030";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
-/* ASA  */  //var eventName = "ApplicationSubmitAfter";
+/* ASA  */  var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
 /* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
 /* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
@@ -29,6 +29,26 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
+	
+	
+	var capID = getCapId();
+	var partialCapID = getPartialCapID(capID);
+	var result = aa.cap.isRenewalInProgress(capID);
+	if(result.getSuccess()){
+		var parentCapId = result.getOutput();
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	var expired = false;
+	if(expired){
+		addStdCondition("Renewal", "Renewal for Revoked Authority");
+	}
 	
 	
 //INSERT TEST CODE END
