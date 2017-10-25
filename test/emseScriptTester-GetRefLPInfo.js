@@ -1,12 +1,12 @@
 var myCapId = "replaceWithAltId";
-var refLPNum = "37076";
+var refLPNum = "174637";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
-/* ASA  */  //var eventName = "ApplicationSubmitAfter";
+/* ASA  */  var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
 /* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
-/* WTUA */  var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
+/* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
 /* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
 /* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "inspName";
@@ -40,14 +40,7 @@ try {
 		logDebug("getAddress2(): "+refLPModel.getAddress2())
 		logDebug("getAddress3(): "+refLPModel.getAddress3())
 		logDebug("getAgencyCode(): "+refLPModel.getAgencyCode())
-		logDebug("getAttributes(): "+refLPModel.getAttributes())
-		if(refLPModel.getAttributes()){
-			var attrList = refLPModel.getAttributes()
-			for(i in attrList){
-				thisAttr = attrList[i]
-				logDebug("     "+attrList[i].getAttributeName()+" = "+attrList[i].getAttributeValue())
-			}
-		}
+		
 		logDebug("getAuditDate(): "+refLPModel.getAuditDate())
 		logDebug("getAuditID(): "+refLPModel.getAuditID())
 		logDebug("getAuditStatus(): "+refLPModel.getAuditStatus())
@@ -114,6 +107,17 @@ try {
 		logDebug("getWcPolicyNo(): "+refLPModel.getWcPolicyNo())
 		logDebug("getWcSuspendDate(): "+refLPModel.getWcSuspendDate())
 		logDebug("getZip(): "+refLPModel.getZip())
+		
+//		logDebug("getAttributes(): "+refLPModel.getAttributes())// added below to log each attribute and value
+		var peopAttrResult = aa.people.getPeopleAttributeByPeople(refLPModel.getLicSeqNbr(), refLPModel.getLicenseType());
+		if(peopAttrResult.getSuccess()){
+			var peopAttrArray = peopAttrResult.getOutput();
+			for(i in peopAttrArray){
+				var lpClassCode = peopAttrArray[i].getAttributeValue();
+				logDebug(peopAttrArray[i].getAttributeName()+": "+lpClassCode);
+			}
+		}
+//		editRefLicProfAttribute(refLPNum, "replace with attr field name", "replace with attr value");//use this to edit an attribute value
 	}
 	
 //INSERT TEST CODE END
