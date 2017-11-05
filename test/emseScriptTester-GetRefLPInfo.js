@@ -1,5 +1,5 @@
 var myCapId = "replaceWithAltId";
-var refLPNum = "174637";
+var refLPNum = "36165";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -118,6 +118,9 @@ try {
 			}
 		}
 //		editRefLicProfAttribute(refLPNum, "replace with attr field name", "replace with attr value");//use this to edit an attribute value
+//		refLPModel.setAcaPermission("N");
+		refLPModel.setInsuranceCo("ACT!VE");
+		aa.licenseScript.editRefLicenseProf(refLPModel);
 	}
 	
 //INSERT TEST CODE END
