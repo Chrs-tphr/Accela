@@ -2,7 +2,7 @@
  * emseScriptTest_SC_AddGISParcelConditions.js
  */
 
-var myCapId = "";
+var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 var eventName = "ApplicationStatusUpdateAfter";
 

@@ -1,4 +1,4 @@
-var myCapId = "RNEW-20160808";
+var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -29,23 +29,101 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
+	var capFilterType = 0;
+	var capFilterStatus = 0;
+	var capFilterExpirationDate = 0;
+	var capCount = 0;
+	var capsWithIssuedDate = 0;
+	var myCaps;
+	var today = new Date();
+	var tDay = today.getMonth()+"/"+today.getDate()+"/"+today.getFullYear();
+
+	var capResult = aa.cap.getByAppType("Building", "Permit", "NA", "NA");
+//	var capResult = aa.cap.getByAppType("Building", "MEP", "NA", "NA");
+	if (capResult.getSuccess()) {
+		myCaps = capResult.getOutput();
+		logDebug("Processing " + myCaps.length + " records");
+	} else {
+		logDebug("ERROR: Getting records, reason is: " + capResult.getErrorType() + ":" + capResult.getErrorMessage());
+	}
 	
-	
-	
-	
-	
-//	var capID = getCapId();
-//	var partialCapID = getPartialCapID(capID);
-//	var result = aa.cap.isRenewalInProgress(capID);
-//	if(result.getSuccess()){
-//		var parentCapId = result.getOutput();
-//	}
-//	
-//	var expired = false;
-//	if(expired){
-//		addStdCondition("Renewal", "Renewal for Revoked Authority");
-//	}
-	
+	var capStatus, count;
+	var counts = {};
+
+	for (index in myCaps){
+	    
+		cap = myCaps[index];
+		capId = cap.getCapID();
+		altId = capId.getCustomID();
+		capStatus = cap.getCapStatus();
+	    count = counts[capStatus];
+	    counts[capStatus] = count ? count + 1 : 1;
+	    
+	    if(matches(capStatus,"Issued","Permit Issued","Finaled","Inactive","X_Re-Activated"))continue;
+	    
+		if(altId.slice(0,3)!="BLD")continue;
+		
+		var permitIssued = getAppSpecific("Permit Issued",capId);
+		
+		if(!matches(permitIssued,"",null))continue;
+	    
+		if(capCount>1000)break;
+		
+		logDebug(br+"   Processing record: "+altId);
+
+//		appTypeResult = cap.getCapType(); //create CapTypeModel object
+//		appTypeString = appTypeResult.toString();
+//		appTypeArray = appTypeString.split("/");
+		
+		//get asi opened date
+		var oDate = getAppSpecific("Application Submittal",capId);
+		if(matches(oDate,null,"null","")){
+			logDebug(br+""+altId+": does not have an App Submittal Date.");
+			capFilterExpirationDate++;
+			continue;
+		}
+		if(dateDiff(oDate,new Date())>540){
+			logDebug("Application should be Expired");
+			continue;
+		}
+		
+		//get asi app exp date
+		var cExpDate = getAppSpecific("Application Expiration",capId);
+		if(matches(cExpDate,null,"null","")){
+			logDebug(br+""+altId+": does not have a App Expiration Date.");
+			capFilterExpirationDate++;
+			continue;
+		}
+		//count days between dates
+		var daysBetween = dateDiff(oDate, cExpDate);
+		logDebug("Existing dates: oDate: "+oDate+", cExpDate: "+cExpDate);
+		logDebug("daysBetween: "+daysBetween);
+		//populate app exp and ext dates
+		if(daysBetween > 360){
+			logDebug("Duration: 540");
+			//populate asi app exp date
+			editAppSpecific("Application Expiration",dateAdd(oDate,540),capId);
+			//populate asi app ext date 1
+			editAppSpecific("Application Extension",dateAdd(oDate,180),capId);
+			//populate asi app ext date 2
+			editAppSpecific("2nd Application Extension",dateAdd(oDate,360),capId);
+		}else if(daysBetween > 180){
+			logDebug("Duration: 360");
+			//populate asi app exp date
+			editAppSpecific("Application Expiration",dateAdd(oDate,360),capId);
+			//populate asi app ext date 1
+			editAppSpecific("Application Extension",dateAdd(oDate,180),capId);
+		}else{
+			logDebug("Duration: 180");
+			//populate asi app exp date
+			editAppSpecific("Application Expiration",dateAdd(oDate,180),capId);
+		}
+	    capCount++;
+	    
+	}
+	for(var key in counts){
+		logDebug(key+" : "+counts[key]);
+	}
 	
 //INSERT TEST CODE END
 	}
