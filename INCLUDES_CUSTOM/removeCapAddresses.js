@@ -9,7 +9,7 @@ function removeCapAddresses(capId){
 				var thisAddrId = thisAddr.getAddressId();
 				//remove address from Authority
 				aa.address.removeAddress(capId, thisAddrId);
-				logDebug("Addresses successfully removed from cap")
+				logDebug(authAddrList.length+" Addresses successfully removed from cap")
 			}
 		}else{
 			logDebug("No addresses on cap")
