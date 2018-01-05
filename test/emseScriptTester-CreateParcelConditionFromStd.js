@@ -4,8 +4,8 @@ var myUserId = "ADMIN";
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
 /* ASA  */  //var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
-/* ASUA  */  var eventName = "ApplicationStatusUpdateAfter";
-/* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
+/* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
+/* WTUA */  var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
 /* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
 /* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "inspName";
@@ -29,114 +29,70 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
-	function mainProcess() {
-		var testAltId = "BLD17-01028";
-		var capFilterType = 0;
-		var capFilterStatus = 0;
-		var capFilterExpirationDate = 0;
-		var capCount = 0;
-		var capsWithIssuedDate = 0;
-		var myCaps;
-		var today = new Date();
-		var tDay = today.getMonth()+"/"+today.getDate()+"/"+today.getFullYear();
+	var parcelNumber = "2811066001";
+	var pCondType = "Parcel";
+	
+	var pCondScriptResult = aa.parcelCondition.getParcelConditions(parcelNumber,pCondType);
+	if(pCondScriptResult.getSuccess()){
+		var pCondList = pCondScriptResult.getOutput()
+		for(con in pCondList){
+			var thiscon = pCondList[con];
+			logDebug("########## getConditionNumber: "+thiscon.getConditionNumber()+" ###############");
 
-		var capResult = aa.cap.getByAppType("Building", "Permit", "NA", "NA");
-		if (capResult.getSuccess()) {
-			myCaps = capResult.getOutput();
-			logDebug("Processing " + myCaps.length + " records");
-		} else {
-			logDebug("ERROR: Getting records, reason is: " + capResult.getErrorType() + ":" + capResult.getErrorMessage());
-		}
-		
-		var capStatus, count;
-		var counts = {};
-
-		for (index in myCaps){
-		    
-			cap = myCaps[index];
-			capId = cap.getCapID();
-			altId = capId.getCustomID();
-
-			if(altId != testAltId)continue;
+			logDebug("getConditionType: "+thiscon.getConditionType());
+			logDebug("getConditionDescription: "+thiscon.getConditionDescription());
+			logDebug("getConditionComment: "+thiscon.getConditionComment());
+			logDebug("getRefNumber1: "+thiscon.getRefNumber1());
+			logDebug("getRefNumber2: "+thiscon.getRefNumber2());
+			logDebug("getImpactCode: "+thiscon.getImpactCode());
+			logDebug("getConditionStatus: "+thiscon.getConditionStatus());
+			logDebug("getConditionStatusType: "+thiscon.getConditionStatusType());
+			logDebug("getDisplayConditionNotice: "+thiscon.getDisplayConditionNotice());
+			logDebug("getIncludeInConditionName: "+thiscon.getIncludeInConditionName());
+			logDebug("getIncludeInShortDescription: "+thiscon.getIncludeInShortDescription());
+			logDebug("getInheritable: "+thiscon.getInheritable());
+			logDebug("getLongDescripton: "+thiscon.getLongDescripton());
+			logDebug("getPublicDisplayMessage: "+thiscon.getPublicDisplayMessage());
+			logDebug("getResolutionAction: "+thiscon.getResolutionAction());
+			logDebug("getConditionGroup: "+thiscon.getConditionGroup());
+			logDebug("getDisplayNoticeOnACA: "+thiscon.getDisplayNoticeOnACA());
+			logDebug("getDisplayNoticeOnACAFee: "+thiscon.getDisplayNoticeOnACAFee());
 			
-//			capStatus = cap.getCapStatus();
-//		    count = counts[capStatus];
-//		    counts[capStatus] = count ? count + 1 : 1;
-		    
-//		    if(capStatus && matches(capStatus,"Issued","Permit Issued","Finaled","Inactive","Cancelled","X_Cancelled","Denied"))continue;
-		    
-			if(!matches(altId.slice(0,3),"BLD","MEP"))continue;
+			logDebug("---------------INHERITED METHODS----------------------")
 			
-//			var permitIssued = getAppSpecific("Permit Issued",capId);
-//			
-//			if(!matches(permitIssued,"",null))continue;
-		    
-			if(capCount>1000)break;
-			
-			logDebug(br+"Processing record: "+altId);
-			
-			//get asi opened date
-			var oDate = getAppSpecific("Application Submittal",capId);
-			logDebug("oDate: "+oDate);
-			
-			if(matches(oDate,null,"null","")){
-				logDebug(br+""+altId+": does not have an App Submittal Date.");
-				capFilterExpirationDate++;
-				continue;
-			}
-			
-//			if(dateDiff(oDate,new Date())>540){
-//				logDebug("Application should be Expired");
-//				continue;
-//			}
-			
-			//get asi app exp date
-			var cExpDate = getAppSpecific("Application Expiration",capId);
-			logDebug("cExpDate: "+cExpDate);
-			if(matches(cExpDate,null,"null","")){
-				logDebug(br+""+altId+": does not have an App Expiration Date.");
-				capFilterExpirationDate++;
-				continue;
-			}
-			
-			//dst to std is 0.958333333333 under, should be 1
-			//std to dst is 1.041666666666 over, should be 1
-			
-			
-			//count days between dates
-			var daysBetween = Math.round(dateDiff(oDate, cExpDate));
-			
-			logDebug("Existing dates: oDate: "+oDate+", cExpDate: "+cExpDate);
-			logDebug("daysBetween: "+daysBetween);
-			//populate app exp and ext dates
-			if(daysBetween > 360){
-				logDebug("Duration: 540");
-				//populate asi app exp date
-				editAppSpecific("Application Expiration",dateAdd(oDate,540),capId);
-				//populate asi app ext date 1
-				editAppSpecific("Application Extension",dateAdd(oDate,180),capId);
-				//populate asi app ext date 2
-				editAppSpecific("2nd Application Extension",dateAdd(oDate,360),capId);
-			}else if(daysBetween > 180){
-				logDebug("Duration: 360");
-				//populate asi app exp date
-				editAppSpecific("Application Expiration",dateAdd(oDate,360),capId);
-				//populate asi app ext date 1
-				editAppSpecific("Application Extension",dateAdd(oDate,180),capId);
-			}else{
-				logDebug("Duration: 180");
-				//populate asi app exp date
-				editAppSpecific("Application Expiration",dateAdd(oDate,180),capId);
-			}
-		    capCount++;
-		    
-		}
-		for(var key in counts){
-			logDebug(key+" : "+counts[key]);
+			logDebug("getActionDepartmentName: "+thiscon.getActionDepartmentName())
+			logDebug("getAppliedDepartmentName: "+thiscon.getAppliedDepartmentName())
+			logDebug("getConditionModel: "+thiscon.getConditionModel())
+			logDebug("getConditionStatusAndTypeValue: "+thiscon.getConditionStatusAndTypeValue())
+			logDebug("getDispConditionComment: "+thiscon.getDispConditionComment())
+			logDebug("getDispConditionDescription: "+thiscon.getDispConditionDescription())
+			logDebug("getDisplayConditionStatusAndType: "+thiscon.getDisplayConditionStatusAndType())
+			logDebug("getDispLongDescripton: "+thiscon.getDispLongDescripton())
+			logDebug("getDispPublicDisplayMessage: "+thiscon.getDispPublicDisplayMessage())
+			logDebug("getDispResolutionAction: "+thiscon.getDispResolutionAction())
+			//logDebug("getDispStringValue: "+thiscon.getDispStringValue())
+			//logDebug("getDispValue: "+thiscon.getDispValue())
+			logDebug("getEffectDate: "+thiscon.getEffectDate())
+			logDebug("getEntityPK: "+thiscon.getEntityPK())
+			logDebug("getExpireDate: "+thiscon.getExpireDate())
+			logDebug("getIssuedDate: "+thiscon.getIssuedDate())
+			logDebug("getNoticeActionType: "+thiscon.getNoticeActionType())
+			//logDebug("getOriginalValue: "+thiscon.getOriginalValue())
+			logDebug("getResColumns: "+thiscon.getResColumns())
+			logDebug("getResConditionComment: "+thiscon.getResConditionComment())
+			logDebug("getResConditionDescription: "+thiscon.getResConditionDescription())
+			logDebug("getResId: "+thiscon.getResId())
+			logDebug("getResLangId: "+thiscon.getResLangId())
+			logDebug("getResLongDescripton: "+thiscon.getResLongDescripton())
+			logDebug("getResPublicDisplayMessage: "+thiscon.getResPublicDisplayMessage())
+			logDebug("getResResolutionAction: "+thiscon.getResResolutionAction())
+			//logDebug("getResStringValue: "+thiscon.getResStringValue())
+			//logDebug("getResValue: "+thiscon.getResValue())
+			logDebug("getServiceProviderCode: "+thiscon.getServiceProviderCode())
+			logDebug("getStatusDate: "+thiscon.getStatusDate())
+			logDebug("getTemplateModel: "+thiscon.getTemplateModel())
 		}
 	}
-	
-	mainProcess();
 	
 //INSERT TEST CODE END
 	}

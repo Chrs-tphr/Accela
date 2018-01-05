@@ -2,9 +2,9 @@ var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
-/* ASA  */  //var eventName = "ApplicationSubmitAfter";
+/* ASA  */  var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
-/* ASUA  */  var eventName = "ApplicationStatusUpdateAfter";
+/* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
 /* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
 /* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
@@ -28,115 +28,60 @@ var runEvent = false; // set to true to simulate the event and run all std choic
 try {
 	showDebug = true;
 //INSERT TEST CODE START
+	var msg = "";
+	var count = 0;
 	
-	function mainProcess() {
-		var testAltId = "BLD17-01028";
-		var capFilterType = 0;
-		var capFilterStatus = 0;
-		var capFilterExpirationDate = 0;
-		var capCount = 0;
-		var capsWithIssuedDate = 0;
-		var myCaps;
-		var today = new Date();
-		var tDay = today.getMonth()+"/"+today.getDate()+"/"+today.getFullYear();
-
-		var capResult = aa.cap.getByAppType("Building", "Permit", "NA", "NA");
-		if (capResult.getSuccess()) {
-			myCaps = capResult.getOutput();
-			logDebug("Processing " + myCaps.length + " records");
-		} else {
-			logDebug("ERROR: Getting records, reason is: " + capResult.getErrorType() + ":" + capResult.getErrorMessage());
-		}
-		
-		var capStatus, count;
-		var counts = {};
-
-		for (index in myCaps){
-		    
-			cap = myCaps[index];
-			capId = cap.getCapID();
-			altId = capId.getCustomID();
-
-			if(altId != testAltId)continue;
-			
-//			capStatus = cap.getCapStatus();
-//		    count = counts[capStatus];
-//		    counts[capStatus] = count ? count + 1 : 1;
-		    
-//		    if(capStatus && matches(capStatus,"Issued","Permit Issued","Finaled","Inactive","Cancelled","X_Cancelled","Denied"))continue;
-		    
-			if(!matches(altId.slice(0,3),"BLD","MEP"))continue;
-			
-//			var permitIssued = getAppSpecific("Permit Issued",capId);
-//			
-//			if(!matches(permitIssued,"",null))continue;
-		    
-			if(capCount>1000)break;
-			
-			logDebug(br+"Processing record: "+altId);
-			
-			//get asi opened date
-			var oDate = getAppSpecific("Application Submittal",capId);
-			logDebug("oDate: "+oDate);
-			
-			if(matches(oDate,null,"null","")){
-				logDebug(br+""+altId+": does not have an App Submittal Date.");
-				capFilterExpirationDate++;
-				continue;
-			}
-			
-//			if(dateDiff(oDate,new Date())>540){
-//				logDebug("Application should be Expired");
-//				continue;
-//			}
-			
-			//get asi app exp date
-			var cExpDate = getAppSpecific("Application Expiration",capId);
-			logDebug("cExpDate: "+cExpDate);
-			if(matches(cExpDate,null,"null","")){
-				logDebug(br+""+altId+": does not have an App Expiration Date.");
-				capFilterExpirationDate++;
-				continue;
-			}
-			
-			//dst to std is 0.958333333333 under, should be 1
-			//std to dst is 1.041666666666 over, should be 1
-			
-			
-			//count days between dates
-			var daysBetween = Math.round(dateDiff(oDate, cExpDate));
-			
-			logDebug("Existing dates: oDate: "+oDate+", cExpDate: "+cExpDate);
-			logDebug("daysBetween: "+daysBetween);
-			//populate app exp and ext dates
-			if(daysBetween > 360){
-				logDebug("Duration: 540");
-				//populate asi app exp date
-				editAppSpecific("Application Expiration",dateAdd(oDate,540),capId);
-				//populate asi app ext date 1
-				editAppSpecific("Application Extension",dateAdd(oDate,180),capId);
-				//populate asi app ext date 2
-				editAppSpecific("2nd Application Extension",dateAdd(oDate,360),capId);
-			}else if(daysBetween > 180){
-				logDebug("Duration: 360");
-				//populate asi app exp date
-				editAppSpecific("Application Expiration",dateAdd(oDate,360),capId);
-				//populate asi app ext date 1
-				editAppSpecific("Application Extension",dateAdd(oDate,180),capId);
-			}else{
-				logDebug("Duration: 180");
-				//populate asi app exp date
-				editAppSpecific("Application Expiration",dateAdd(oDate,180),capId);
-			}
-		    capCount++;
-		    
-		}
-		for(var key in counts){
-			logDebug(key+" : "+counts[key]);
-		}
+	//get application for authority list
+	var capResult = aa.cap.getByAppType("MCD", "Intrastate Motor Carrier", "Application", "NA");
+	if (capResult.getSuccess()) {
+		var myCaps = capResult.getOutput();
+		logDebug("Processing " + myCaps.length + " records");
+	} else {
+		logDebug("ERROR: Getting records, reason is: " + capResult.getErrorType() + ":" + capResult.getErrorMessage());
 	}
 	
-	mainProcess();
+	//filter application for authority list by cap status
+	for (index in myCaps){
+		logDebug(msg);
+		msg = "";
+		// if(count>10)break;
+		var cap = myCaps[index];
+		var capId = cap.getCapID();
+		var appId = capId.getCustomID();
+		var capStatus = cap.getCapStatus();
+		msg += "App: "+appId+", AppStatus: "+capStatus+", ";
+		if(capStatus == "Approved")continue;
+		//get trans lp
+		var capLpList = aa.licenseProfessional.getLicensedProfessionalsByCapID(capId).getOutput();
+		if(capLpList == null)continue;
+		for(x in capLpList){
+			//get lp license number
+			var cvedNum = capLpList[x].getLicenseNbr();
+		}
+		if(matches(cvedNum,null,""))continue;
+		if(doesRecordExist(cvedNum))continue;
+		//get ref lp with trans lp lic number
+		msg += "CVED#: "+cvedNum+", ";
+		var refLPModel = getRefLicenseProf(cvedNum);
+		if(refLPModel){
+			count++;
+			//clears fields previously being used to track insurance expiration for ACA
+			refLPModel.setBusinessLicExpDate(null);//cargo insurance
+			refLPModel.setInsuranceExpDate(null);//plpd insurance
+			//clears Authority status for ACA
+			refLPModel.setInsuranceCo(null);
+			//update Attr Intrastate Authority Status
+			editRefLicProfAttribute(cvedNum, "INTRASTATE AUTHORITY STATUS", null);
+			//update trans LP Attr Intrastate Authority Status
+			editLicProfAttribute(capId, cvedNum,"INTRASTATE AUTHORITY STATUS", null);
+			//makes carrier not display in ACA
+			refLPModel.setAcaPermission("N");
+			//commit ref lp changes
+			aa.licenseScript.editRefLicenseProf(refLPModel);
+			msg += "Cleared Ref LP."
+		}
+	}
+	logDebug("Processed "+count+" CVED #'s");
 	
 //INSERT TEST CODE END
 	}

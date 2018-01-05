@@ -2,10 +2,10 @@ var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
-/* ASA  */  var eventName = "ApplicationSubmitAfter";
+/* ASA  */  //var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
 /* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
-/* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
+/* WTUA */  var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
 /* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
 /* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "inspName";
@@ -29,7 +29,93 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
+	var parcelNumber = "2812091020";
+	var conditionType = "Parcel";
+	var conditionDescription = "Not in City";
+	var conditionComment = "Parcel is not located within Santa Clarita city limits";
+	var refNumber1 = null;
+	var refNumber2 = null;
+	var impactCode = "Lock";
+	var conditionStatus = "Applied";
+	var effectDate = sysDate;
+	var expireDate = null;
+	var issuedDate = sysDate;
+	var statusDate = sysDate;
+	var issuedByUser = systemUserObj;
+	var statusByUser = systemUserObj;
+	var conditionStatusType = "Applied";
+	var displayConditionNotice = "Y";
+	var includeInConditionName = "Y";
+	var includeInShortDescription = "N";
+	var inheritable = "Y";
+	var longDescripton = null;
+	var publicDisplayMessage = null;
+	var resolutionAction = null;
+	var conditionGroup = "Property";
+	var displayNoticeOnACA = "Y";
+	var displayNoticeOnACAFee = "N";
 	
+	var pCondScriptResult = aa.parcelCondition.getParcelConditions(parcelNumber,conditionType);
+	if(pCondScriptResult.getSuccess()){
+		var pCondList = pCondScriptResult.getOutput()
+		for(con in pCondList){
+			var thiscon = pCondList[con];
+			logDebug("########## getConditionNumber: "+thiscon.getConditionNumber()+" ###############");
+
+			logDebug("getConditionType: "+thiscon.getConditionType());
+			logDebug("getConditionDescription: "+thiscon.getConditionDescription());
+			logDebug("getConditionComment: "+thiscon.getConditionComment());
+			logDebug("getRefNumber1: "+thiscon.getRefNumber1());
+			logDebug("getRefNumber2: "+thiscon.getRefNumber2());
+			logDebug("getImpactCode: "+thiscon.getImpactCode());
+			logDebug("getConditionStatus: "+thiscon.getConditionStatus());
+			logDebug("getConditionStatusType: "+thiscon.getConditionStatusType());
+			logDebug("getDisplayConditionNotice: "+thiscon.getDisplayConditionNotice());
+			logDebug("getIncludeInConditionName: "+thiscon.getIncludeInConditionName());
+			logDebug("getIncludeInShortDescription: "+thiscon.getIncludeInShortDescription());
+			logDebug("getInheritable: "+thiscon.getInheritable());
+			logDebug("getLongDescripton: "+thiscon.getLongDescripton());
+			logDebug("getPublicDisplayMessage: "+thiscon.getPublicDisplayMessage());
+			logDebug("getResolutionAction: "+thiscon.getResolutionAction());
+			logDebug("getConditionGroup: "+thiscon.getConditionGroup());
+			logDebug("getDisplayNoticeOnACA: "+thiscon.getDisplayNoticeOnACA());
+			logDebug("getDisplayNoticeOnACAFee: "+thiscon.getDisplayNoticeOnACAFee());
+			
+
+
+
+			
+			if(thiscon.getConditionDescription() == "Not in City" && (thiscon.getDisplayNoticeOnACA() != "Y" || thiscon.getImpactCode() == "Hold")){
+				thiscon.setDisplayNoticeOnACA("Y");
+				thiscon.setImpactCode("Lock");
+				var editResult = aa.parcelCondition.editParcelCondition(thiscon);
+				if(editResult.getSuccess()){
+					logDebug("Successfully updated parcel condition: "+thiscon.getConditionDescription()+" on Parcel: "+parcelNumber);
+				}else{
+					logDebug("Parcel condition update unsuccessful: "+parcelNumber)
+				}
+			}else{
+				logDebug("No updates needed for parcel: "+parcelNumber)
+			}
+		}
+	}
+	
+	
+	
+//	function addParcelConditionWithACA(parcelNum,cType,cStatus,cDesc,cComment,cImpact){
+//		var addParcelCondResult = aa.parcelCondition.addParcelCondition(parcelNum,cType,cDesc,cComment,null,null,cImpact,cStatus,sysDate,null,sysDate,sysDate,systemUserObj,systemUserObj,"Applied","Y","N","N",null,null,null,null,null,"Y","N"); 
+//		
+//        if (addParcelCondResult.getSuccess()){
+//			logMessage("Successfully added condition to Parcel " + parcelNum + "  (" + cImpact + ") " + cDesc);
+//			logDebug("Successfully added condition to Parcel " + parcelNum + "  (" + cImpact + ") " + cDesc);
+//		}else{
+//			logDebug( "**ERROR: adding condition to Parcel " + parcelNum + "  (" + cImpact + "): " + addParcelCondResult.getErrorMessage());
+//		}
+//	}
+//	
+//	
+//	
+//	addParcelConditionWithACA(parcelNum,cType,cStatus,cDesc,cComment,cImpact);
 	
 //INSERT TEST CODE END
 	}
