@@ -1,4 +1,4 @@
-var myCapId = "APP-20180001";
+var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -29,16 +29,7 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
-	logDebug(typeof(appTypeArray));
 	
-	include("ASIUA" + ":" + appTypeArray[0] + "/*/*/*");
-	include("ASIUA" + ":" + appTypeArray[0] + "/" + appTypeArray[1] + "/*/*");
-	include("ASIUA" + ":" + appTypeArray[0] + "/" + appTypeArray[1] + "/" + appTypeArray[2] + "/*");
-	include("ASIUA" + ":" + appTypeArray[0] + "/*/" + appTypeArray[2] + "/*");
-	include("ASIUA" + ":" + appTypeArray[0] + "/*/" + appTypeArray[2] + "/" + appTypeArray[3]);
-	include("ASIUA" + ":" + appTypeArray[0] + "/*/*/" + appTypeArray[3]);
-	include("ASIUA" + ":" + appTypeArray[0] + "/" + appTypeArray[1] + "/*/" + appTypeArray[3]);
-	include("ASIUA" + ":" + appTypeArray[0] + "/" + appTypeArray[1] + "/" + appTypeArray[2] + "/" + appTypeArray[3]);
 	
 //INSERT TEST CODE END
 	}
