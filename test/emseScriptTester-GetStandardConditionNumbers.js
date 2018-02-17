@@ -11,7 +11,7 @@ var myUserId = "ADMIN";
 /* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "inspName";
 /* ISB ALT */ //var eventName = "InspectionMultipleScheduleBefore"; inspType = "inspName"; wfTask = "taskName"; balanceDue = 0;
 /* PRA  */  //var eventName = "PaymentReceiveAfter";  
-/* ASIUA */ //var eventName = "ApplicationSpecificInfoUpdateAfter";
+/* ASIUA */ var eventName = "ApplicationSpecificInfoUpdateAfter";
 /* WTUB */  //var eventName = "WorkflowAdhocTaskUpdateBefore";
 /* WTUA */  //var eventName = "WorkflowAdhocTaskUpdateAfter";
 /* DUA */  //var eventName = "DocumentUploadAfter";
@@ -29,7 +29,40 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
+	function getStandardConditionNumber(cGroup,cType,cDesc){
+		var standardConditionsArray = aa.capCondition.getStandardConditionsByGroup(cGroup).getOutput();
+		for(i in standardConditionsArray){
+			var thisStdCon = standardConditionsArray[i];
+			if(thisStdCon.getConditionType().toUpperCase() == cType.toUpperCase() && thisStdCon.getConditionDesc().toUpperCase() == cDesc.toUpperCase()){
+				return thisStdCon.getConditionNbr();
+			}
+		}
+	}
 	
+	var cGroup = "Property";
+	var cType = "Parcel";
+	
+	//condition name array
+	var conNameArray = [
+		"1000 feet of School"
+		,"500 feet of Elected Official Parcel"
+		,"Government Owned"
+		,"HMNMH"
+		,"High risk Flood Zone"
+		,"Moderate-to-Low risk Flood Zone"
+		,"Not in City"
+		,"Public School"
+		,"Utility"
+		,"Mobile Home Park"
+		];
+	
+	logDebug(br);
+	
+	for(i in conNameArray){
+		var thisConName = conNameArray[i].toString();
+		var thisConditionNumber = getStandardConditionNumber(cGroup,cType,thisConName);
+		logDebug(thisConName+": "+thisConditionNumber);
+	}
 	
 //INSERT TEST CODE END
 	}
