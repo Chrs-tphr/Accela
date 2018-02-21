@@ -46,11 +46,13 @@ try {
 	var conNameArray = [
 		"1000 feet of School"
 		,"500 feet of Elected Official Parcel"
+		,"Fire Zone"
 		,"Government Owned"
 		,"HMNMH"
 		,"High risk Flood Zone"
 		,"Moderate-to-Low risk Flood Zone"
 		,"Not in City"
+		,"Oak Tree"
 		,"Public School"
 		,"Utility"
 		,"Mobile Home Park"
