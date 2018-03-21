@@ -1,8 +1,13 @@
 function editParentExpiration(eStatus,eDate){
 	var savedCapId = capId;
-	capId = parentCapId
-	
-	licEditExpInfo(eStatus,eDate);
-	
-	capId = savedCapId;
+	var pId = getParent();
+	if(pId){
+		capId = pId;
+		licEditExpInfo(eStatus,eDate);
+		capId = savedCapId;
+		return true;
+	}else{
+		logDebug("No parent found, expiration info not updated");
+		return false;
+	}
 }
