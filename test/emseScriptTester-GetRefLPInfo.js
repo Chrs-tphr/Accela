@@ -1,5 +1,5 @@
-var myCapId = "replaceWithAltId";
-var refLPNum = "36165";
+var myCapId = "doNotUse";
+var refLPNum = "replaceWithStateLicNum";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
