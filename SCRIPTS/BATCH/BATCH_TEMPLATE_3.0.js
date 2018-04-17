@@ -139,52 +139,5 @@ logDebug("End of Job: Elapsed Time : " + elapsed() + " Seconds");
 /-----------------------------------------------------------------------------------------------------*/
 
 function mainProcess(){
-	var count  = 0;
-	var counts = {};
-	var condDesc = "";
 	
-	//get ref parcel array
-	var refParcelList = getUniqueRefParcelNumbers();
-	
-	//loop through ref parcel array
-	for(tpn in refParcelList){
-		count++;
-		if(count > 2000)break;
-		
-		//check parcel for conditions
-		var pConList = aa.parcelCondition.getParcelConditions(refParcelList[tpn]);
-		if(pConList.getSuccess()){
-			var thisConList = pConList.getOutput();
-			if(thisConList.length > 0){
-//				logDebug(br+""+refParcelList[tpn]+" has "+thisConList.length+" condition(s): ");
-				for(pc in thisConList){
-					condDesc = thisConList[pc].getConditionDescription();
-				    count = counts[condDesc];
-				    counts[condDesc] = count ? count + 1 : 1;
-				}
-			}
-		}
-	}
-	
-	for(var key in counts){
-		logDebug(key+" : "+counts[key]);
-	}
-}
-
-function getUniqueRefParcelNumbers(){
-	var refParcelList = new Array();
-	var initialContext = aa.proxyInvoker.newInstance("javax.naming.InitialContext", null).getOutput();
-	var ds = initialContext.lookup("java:/AA");
-	var conn = ds.getConnection(); logDebug("Creating DB Connection");
-	var SQL = "SELECT L1_PARCEL_NBR as return_string FROM L3PARCEL INNER JOIN RSERV_PROV ON RSERV_PROV.APO_SRC_SEQ_NBR = L3PARCEL.SOURCE_SEQ_NBR WHERE RSERV_PROV.SERV_PROV_CODE = 'SANTACLARITA'";
-	var dbStmt = conn.prepareStatement(SQL); logDebug("Preparing SQL");
-	dbStmt.executeQuery(); logDebug("Executing Query");
-	results = dbStmt.getResultSet();
-	while(results.next()){
-		refParcelList.push(results.getString("return_string"))
-	}
-	logDebug("Reference Parcel Numbers Found: "+refParcelList.length);
-	dbStmt.close(); logDebug("Query Complete");
-	conn.close(); logDebug("DB Connection Closed");
-	return refParcelList;
 }
