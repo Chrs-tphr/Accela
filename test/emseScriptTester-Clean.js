@@ -2,7 +2,7 @@ var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
-/* ASA  */  //var eventName = "ApplicationSubmitAfter";
+/* ASA  */  var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
 /* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
 /* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
@@ -30,7 +30,6 @@ try {
 //INSERT TEST CODE START
 	
 	
-
 	
 //INSERT TEST CODE END
 	}
