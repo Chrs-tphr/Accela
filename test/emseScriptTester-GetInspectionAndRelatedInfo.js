@@ -1,10 +1,10 @@
-var myCapId = "replaceWithAltId";
+var myCapId = "MEP18-00966";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
-/* ASA  */  var eventName = "ApplicationSubmitAfter";
+/* ASA  */  //var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
-/* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
+/* ASUA  */  var eventName = "ApplicationStatusUpdateAfter";
 /* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
@@ -90,26 +90,25 @@ try {
 		return nts;
 	}
 	
-	getClockTimeFromJsDate(new Date());
-	
-	var dtest = new Date();
-	dtest.setMinutes(dtest.getMinutes()+120);
-	logDebug(dtest);
-	
-	logDebug("jsDate Start and End Test: "+getClockTimeFromJsDate(new Date())+" - "+getClockTimeFromJsDate(dtest));
-	
 	var br = "<br>";
 	
-	var fDays = -12;
-	var tDays = -12;
-	var tWindow = 120;
+//	var iCapId = aa.cap.getCapID(myCapId).getOutput();
+//	logDebug("---------------------------------iCapId :: ");
+//	viewObj(iCapId);
+//	
+//	var capContactArray = getContactArray(iCapId);
+//	logDebug("capContactArray: "+capContactArray);
+//	
+//	if(capContactArray && capContactArray.length > 0){
+//		for(c in capContactArray){
+//			logDebug("capContactArray[c]: "+capContactArray[c]);
+//		}
+//	}
+//	
+//	logDebug("GOOOOOOOOD!!!!!!!!!!");
 	
-	var fDate = convertJsDateToYYYYMMDD(new Date(dateAdd(null,fDays)));
-	logDebug(fDate);
-	
-	var tDate = convertJsDateToYYYYMMDD(new Date(dateAdd(null,tDays)));
-	logDebug(tDate);
-	
+	var fDate = convertJsDateToYYYYMMDD(new Date(dateAdd(null,0)));//logDebug(fDate);
+	var tDate = convertJsDateToYYYYMMDD(new Date(dateAdd(null,0)));//logDebug(tDate);
 	var inspectionArray = aa.inspection.getInspections(fDate,tDate);
 	if(inspectionArray.getSuccess()){
 		var inspArray = inspectionArray.getOutput();
@@ -117,14 +116,25 @@ try {
 			var inspArrayL = inspArray.length; logDebug("----inspArrayL: "+inspArrayL);
 			for(i in inspArray){
 				var thisInsp = inspArray[i];
-//				viewObj(thisInsp);
 				
 				var inspDetails = thisInsp.getInspection();
-//				viewObj(inspDetails);
+				
+				var capId = inspDetails.getCapID().toString().split("-");
+				var i_id1 = capId[0];
+				var i_id2 = capId[1];
+				var i_id3 = capId[2];
+				var i_capResult = aa.cap.getCapID(i_id1, i_id2, i_id3);
+				if (i_capResult.getSuccess()){
+					var capID = i_capResult.getOutput(); logDebug("----capID: "+capID);
+					capId = capID;
+				}
+					
+				var altId = capID.getCustomID(); 
+				if(!matches(altId,"MEP18-00966"))continue;//for testing only
+				logDebug("----altId: "+altId);
 				
 				var type = inspDetails.getInspectionType(); logDebug("----Type: "+type);
 				var date = inspDetails.getScheduledDate(); logDebug("----Scheduled Date: "+date);
-//				viewObj(date);
 				
 				var emailDate = ((date.getMonth()+1)+"/"+date.getDate()+"/"+(date.getYear()+1900));
 				
@@ -140,16 +150,6 @@ try {
 					var timeParam = "12pm - 4pm";
 				}
 				logDebug("----Scheduled Time: "+timeParam);
-				
-				var capId = inspDetails.getCapID().toString().split("-");
-				var i_id1 = capId[0];
-				var i_id2 = capId[1];
-				var i_id3 = capId[2];
-				var i_capResult = aa.cap.getCapID(i_id1, i_id2, i_id3);
-				if (i_capResult.getSuccess())
-					var capID = i_capResult.getOutput(); logDebug("----capID: "+capID);
-//				viewObj(capID);
-				var altId = capID.getCustomID(); logDebug("----altId: "+altId);
 				
 				var inspector = thisInsp.getInspector();
 				var iUserId = inspector.getGaUserID();
@@ -178,8 +178,36 @@ try {
 				}
 				
 				contactOptions += "the City of Santa Clarita Building and Safety Department at (661) 255-4935."
-				var emailBody = "For permit number "+altId+", your inspection: "+type+" is schedule for today, "+emailDate+". Your inspector will arrive between "+timeParam+". If you have questions please contact "+contactOptions;
+				var emailBody = "is schedule for today, "+emailDate+". Your inspector will arrive between "+timeParam+". If you have questions please contact "+contactOptions;
 				logDebug(br+emailBody+br);
+				
+				var contactTypesArray = new Array("Applicant");
+				var contactObjArray = getContactObjs(capId,contactTypesArray);
+
+				if(contactObjArray.length > 0){
+					for (iCon in contactObjArray) {
+						var tContactObj = contactObjArray[iCon];
+						logDebug("Contact Name: " + tContactObj.people.getFirstName() + " " + tContactObj.people.getLastName());
+						if(!matches(tContactObj.people.getEmail(),null,undefined,"")) {
+							logDebug("Contact Email: " + tContactObj.people.getEmail());
+							var eParams = aa.util.newHashtable();
+							addParameter(eParams, "$$InspectionType$$", type);
+							addParameter(eParams, "$$EmailBody$$", emailBody);
+							addParameter(eParams, "$$recordTypeAlias$$", cap.getCapType().getAlias());
+							if(matches(tContactObj.people.getFirstName(),null,undefined,"") || (tContactObj.people.getLastName(),null,undefined,"")) {
+								addParameter(eParams, "$$ApplicantFullName$$", tContactObj.people.getFullName());
+							} else {
+								addParameter(eParams, "$$ApplicantFullName$$", tContactObj.people.getFirstName() + " " + tContactObj.people.getLastName());
+							}
+							getRecordParams4Notification(eParams);
+							tContactObj.getEmailTemplateParams(eParams);
+							getPrimaryAddressLineParam4Notification(eParams);
+							getContactParams4Notification(eParams,contactTypesArray);
+							
+							sendNotification(agencyReplyEmail,tContactObj.people.getEmail(),"","BLD_SCHEDULED_INSPECTION_REMINDER",eParams,null);
+						}
+					}
+				}
 			}
 		}
 	}
