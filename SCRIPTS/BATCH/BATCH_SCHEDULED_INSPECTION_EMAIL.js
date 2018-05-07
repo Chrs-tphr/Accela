@@ -92,6 +92,8 @@ if(batchJobResult.getSuccess()){
 
 aa.env.setValue("fromDate", "");
 aa.env.setValue("toDate", "");
+aa.env.setValue("testUpdate", true);//set to true to test against a single record, set to false to run against all records.
+aa.env.setValue("testCap", "");//altId of test record
  
 var fromDate = getParam("fromDate"); // Hardcoded dates.   Use for testing only
 var toDate = getParam("toDate"); // ""
@@ -100,6 +102,9 @@ var dToDate = aa.date.parseDate(toDate); //
 
 var lookAheadDays = aa.env.getValue("lookAheadDays"); // Number of days from today
 var daySpan = aa.env.getValue("daySpan"); // Days to search (6 if run weekly, 0 if daily, etc.)
+
+var testUpdate = getParam("testUpdate");
+var testCap = getParam("testCap");
 
 
 /*----------------------------------------------------------------------------------------------------/
@@ -166,7 +171,7 @@ function mainProcess(){
 				}
 					
 				var altId = capID.getCustomID(); 
-				if(!matches(altId,"MEP18-00966"))continue;//for testing only
+				if(testUpdate && !matches(altId,testCap))continue;//for testing only
 				logDebug("----altId: "+altId);
 				
 				var type = inspDetails.getInspectionType(); logDebug("----Type: "+type);
