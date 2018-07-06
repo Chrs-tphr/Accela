@@ -1,4 +1,4 @@
-var myCapId = "";
+var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -42,13 +42,56 @@ try {
 			logDebug(outputArray[i]);
 		}
 	}
-	
-	function elapsed(){
-		var thisDate = new Date();
-		var thisTime = thisDate.getTime();
-		return ((thisTime - startTime) / 1000)
+
+	// License Number that the user entered or selected
+	var licNum = "858932";
+
+	// Rest of the license...
+
+	var document;
+	var root;        
+	var aURLArgList = "https://www2.cslb.ca.gov/IVR/License+Detail.aspx?LicNum=" + licNum;
+	var vOutObj = aa.httpClient.get(aURLArgList);
+	var isError = false;
+
+	if(vOutObj.getSuccess()){
+		var vOut = vOutObj.getOutput();
+	    	var sr =  aa.proxyInvoker.newInstance("java.io.StringBufferInputStream", new Array(vOut)).getOutput();
+		var saxBuilder = aa.proxyInvoker.newInstance("org.jdom.input.SAXBuilder").getOutput();
+		document = saxBuilder.build(sr);
+	    	root = document.getRootElement();
+	    	
+	    	var lpBiz = root.getChild("BusinessInfo");
+	    	var lpStatus = root.getChild("PrimaryStatus");
+	    	var lpClass = root.getChild("Classifications");
+	    	var lpBonds = root.getChild("ContractorBond");
+	    	var lpWC = root.getChild("WorkersComp");
+	    	
+	    	logDebug("----------------CHECKING----------------");
+	    	
+	    	viewObj(lpBiz);
+	    	
+	    	logDebug("----------------------------------------");
+
+	    	viewObj(lpStatus);
+	    	
+	    	logDebug("----------------------------------------");
+
+	    	viewObj(lpClass);
+	    	
+	    	logDebug("----------------------------------------");
+
+	    	viewObj(lpBonds);
+	    	
+	    	logDebug("----------------------------------------");
+
+	    	viewObj(lpWC);
+	    	
+	    	logDebug("------------------DONE------------------");
+	    	
 	}
-	
+
+
 	
 //INSERT TEST CODE END
 	}

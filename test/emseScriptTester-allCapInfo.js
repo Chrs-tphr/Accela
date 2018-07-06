@@ -1,4 +1,4 @@
-var myCapId = "";
+var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -43,12 +43,54 @@ try {
 		}
 	}
 	
-	function elapsed(){
-		var thisDate = new Date();
-		var thisTime = thisDate.getTime();
-		return ((thisTime - startTime) / 1000)
+	var capListResult = aa.cap.getCapIDList(); //logDebug("---aa.cap.getCapIDList() = capListResult---"); viewObj(capListResult);
+	if(capListResult.getSuccess()){
+		var capList = capListResult.getOutput(); //logDebug("---capListResult.getOutput() = capList---"); viewObj(capList);
+		
+		//*
+		logDebug("capList.length: "+capList.length);
+		if(capList.length > 0){
+			var incCapsArr = [];
+			for(i=0;i<capList.length;i++){
+				var thisCapID = capList[i]; //logDebug("---capList[i] = thisCapID---"); viewObj(thisCapID);
+				var customId = thisCapID.getCustomID(); //logDebug("customId: "+customId); viewObj(customId);
+				
+				if(/*customId.contains("INCOMPLETE") ||*/ customId.contains("TMP")){
+					//build array of incomplete caps
+					incCapsArr.push(thisCapID);
+				}else{
+					continue;
+				}
+			}
+			//do data stuff
+			if(incCapsArr.length > 0){
+				logDebug("Total Incomplete Records: "+incCapsArr.length);
+				for(x in incCapsArr){
+					var tCap = incCapsArr[x]; logDebug("tCap: "+tCap.getCustomID());
+					//check record file date
+					//get record type
+					//get created by user id
+						//if public
+							//get people object
+								//get user
+								//get user email
+						//if staff
+							//get sysUser object
+								//get user
+								//get email
+				}
+			}else{
+				logDebug("No INCOMPLETE Records");
+			}
+		}else{
+			logDebug("No CAPS returned");
+		}
+		
+		//*/
+		
+	}else{
+		logDebug("Could not get capid list");
 	}
-	
 	
 //INSERT TEST CODE END
 	}

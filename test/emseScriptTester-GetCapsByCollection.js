@@ -29,7 +29,8 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
-	function viewObj(obj){
+	function viewObj(name, obj){
+		logDebug("----- "+name+" start -----");
 		var outputArray = [];
 		for(var key in obj){
 			if(typeof obj[key] == 'function')
@@ -41,6 +42,7 @@ try {
 		for(i=1;i<outputArray.length;i++){
 			logDebug(outputArray[i]);
 		}
+		logDebug("----- "+name+" end -----");
 	}
 	
 	function elapsed(){
@@ -48,6 +50,53 @@ try {
 		var thisTime = thisDate.getTime();
 		return ((thisTime - startTime) / 1000)
 	}
+	
+	
+	var startDate = new Date();
+	var startTime = startDate.getTime();
+	var maxSeconds = 290;
+	
+	var incCapArr = [];
+	var incCapCount = 0;
+	
+	var lookAhead = -30;
+	var searchDays = 0;
+
+	var fromDt = aa.date.parseDate(dateAdd(null,parseInt(lookAhead)));
+	var toDt = aa.date.parseDate(dateAdd(null,parseInt(searchDays)));
+
+	var emptyGISArray = new Array();
+
+	var emptyCm = aa.cap.getCapModel().getOutput(); viewObj(emptyCm);
+	var emptyCt = emptyCm.getCapType(); viewObj(emptyCt);
+	emptyCt.setGroup("MCD");
+	emptyCt.setType("Intrastate Motor Carrier");
+	emptyCt.setSubType(null);
+	emptyCt.setCategory(null);
+	
+	viewObj(emptyCt);
+	
+	emptyCm.setCapType(emptyCt);
+	
+	viewObj(emptyCm);
+	
+	var vCAPListResult = aa.cap.getCapListByCollection(emptyCm, null, null, fromDt,toDt,null, emptyGISArray);
+	var vCAPListCount = 0;
+	if(vCAPListResult.getSuccess()){
+		var vCAPList = vCAPListResult.getOutput();
+		if(vCAPList.length > 0){
+			for(x in vCAPList){
+				vCAPListCount++;
+				if(vCAPListCount > 1000)break;
+				
+				var tCap = vCAPList[x];
+//				viewObj(tCap);
+				logDebug("----------File Date: "+convertDate(tCap.getFileDate()));
+//				logDebug("altId: "+altId);
+			}
+		}
+	}
+	
 	
 	
 //INSERT TEST CODE END

@@ -29,7 +29,8 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
-	function viewObj(obj){
+	function viewObj(log, obj){
+		logDebug("---- "+log+" start ----");
 		var outputArray = [];
 		for(var key in obj){
 			if(typeof obj[key] == 'function')
@@ -41,6 +42,7 @@ try {
 		for(i=1;i<outputArray.length;i++){
 			logDebug(outputArray[i]);
 		}
+		logDebug("---- "+log+" end ----");
 	}
 	
 	function elapsed(){
@@ -48,6 +50,73 @@ try {
 		var thisTime = thisDate.getTime();
 		return ((thisTime - startTime) / 1000)
 	}
+	var startDate = new Date();
+	var startTime = startDate.getTime();
+	var maxSeconds = 290;
+	
+	var incCapArr = [];
+	var incCapCount = 0;
+	
+	
+	
+	
+	///*
+	
+	
+	
+	var capListSR = aa.cap.getCapIDList();
+	if(capListSR.getSuccess()){
+		var capList = capListSR.getOutput();
+		var capListLength = capList.length;
+		logDebug("capListLength: "+capListLength);
+		if(capListLength > 0){
+			for(i=0; i<capListLength; i++){
+				var rTime = elapsed();
+				if (rTime > maxSeconds) { // only continue if time hasn't expired
+					logDebug("WARNING","A script timeout has caused partial completion of this process.  Please re-run.  " + rTime + " seconds elapsed, " + maxSeconds + " allowed.") ;
+					timeExpired = true;
+					break;
+				}
+				
+				var thisCap = capList[i]; //*Class = CapIDScriptModel*/ viewObj("thisCap", thisCap);
+				
+				var capId = aa.cap.getCapID(thisCap.getID1(), thisCap.getID2(), thisCap.getID3()).getOutput(); //*Class = CapIDModel*/ viewObj("capId", capId);
+				
+				var capModel = aa.cap.getCapByPK(thisCap.getCapID(),true).getOutput(); /*Class = CapModel*/ viewObj("capModel", capModel);
+				
+//				var capScriptModel = aa.cap.getCap(capId).getOutput(); /*Class = CapScriptModel*/ viewObj("capScriptModel", capScriptModel);
+				
+				break;
+				
+				if(capModel){
+					if(capModel.getAuditStatus() != "A")continue;
+					if(capModel.isCompleteCap())continue;
+					logDebug("capModel.getAuditStatus(): "+capModel.getAuditStatus());
+					logDebug("capModel.getCapClass(): "+capModel.getCapClass());
+					logDebug("capModel.isCompleteCap(): "+capModel.isCompleteCap());
+					logDebug("capModel.isCreatedByACA(): "+capModel.isCreatedByACA());
+					logDebug("capModel.getFileDate(): "+capModel.getFileDate());
+					if(!capModel.isCompleteCap()){
+						
+//						incCapArr.push(cap);
+						incCapCount++;
+						if(incCapCount > 1)break;
+					}
+				}
+			}
+			
+			logDebug("RunTime: "+rTime+", Checked: "+i+" of "+capListLength+" records, found "+incCapCount+" Incomplete");
+			
+		}else{
+			logDebug("ERROR no caps in list");
+		}
+	}else{
+		logDebug("ERROR no capListSR");
+	}
+	
+	
+	
+	//*/
 	
 	
 //INSERT TEST CODE END
