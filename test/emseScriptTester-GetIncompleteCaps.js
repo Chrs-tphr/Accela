@@ -50,14 +50,17 @@ try {
 		var thisTime = thisDate.getTime();
 		return ((thisTime - startTime) / 1000)
 	}
+	
+	//------------variables--------------//
+	
 	var startDate = new Date();
 	var startTime = startDate.getTime();
 	var maxSeconds = 290;
 	
 	var incCapArr = [];
 	var incCapCount = 0;
-	
-	
+
+	//------------variables--------------//
 	
 	
 	///*
@@ -82,26 +85,28 @@ try {
 				
 				var capId = aa.cap.getCapID(thisCap.getID1(), thisCap.getID2(), thisCap.getID3()).getOutput(); //*Class = CapIDModel*/ viewObj("capId", capId);
 				
-				var capModel = aa.cap.getCapByPK(thisCap.getCapID(),true).getOutput(); /*Class = CapModel*/ viewObj("capModel", capModel);
+				var capModel = aa.cap.getCapByPK(thisCap.getCapID(),true).getOutput(); //*Class = CapModel*/ viewObj("capModel", capModel);
 				
 //				var capScriptModel = aa.cap.getCap(capId).getOutput(); /*Class = CapScriptModel*/ viewObj("capScriptModel", capScriptModel);
 				
-				break;
+//				break;
 				
 				if(capModel){
-					if(capModel.getAuditStatus() != "A")continue;
-					if(capModel.isCompleteCap())continue;
-					logDebug("capModel.getAuditStatus(): "+capModel.getAuditStatus());
-					logDebug("capModel.getCapClass(): "+capModel.getCapClass());
-					logDebug("capModel.isCompleteCap(): "+capModel.isCompleteCap());
-					logDebug("capModel.isCreatedByACA(): "+capModel.isCreatedByACA());
-					logDebug("capModel.getFileDate(): "+capModel.getFileDate());
-					if(!capModel.isCompleteCap()){
-						
-//						incCapArr.push(cap);
-						incCapCount++;
-						if(incCapCount > 1)break;
-					}
+					incCapCount++;
+					if(incCapCount > 2000)break;
+//					if(capModel.getAuditStatus() != "A")continue;
+//					if(capModel.isCompleteCap())continue;
+					if(capModel.getCapClass() != "INCOMPLETE CAP")continue;
+					if(!capModel.getCreatedByACA())continue;
+					logDebug("altId|"+capModel.getAltID()+"|File Date|"+capModel.getFileDate()+"|Cap Class|"+capModel.getCapClass());
+//					logDebug("capModel.getAuditStatus(): "+capModel.getAuditStatus());
+//					logDebug("capModel.getCapClass(): "+capModel.getCapClass());
+//					logDebug("capModel.isCompleteCap(): "+capModel.isCompleteCap());
+//					logDebug("capModel.isCreatedByACA(): "+capModel.isCreatedByACA());
+//					logDebug("capModel.getFileDate(): "+capModel.getFileDate());
+					
+//					incCapArr.push(cap);
+					
 				}
 			}
 			
