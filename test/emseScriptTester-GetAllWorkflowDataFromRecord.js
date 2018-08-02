@@ -1,11 +1,11 @@
-var myCapId = "18BC00094";
+var myCapId = "ENC18-00220";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
 /* ASA  */  //var eventName = "ApplicationSubmitAfter";
 /* ASUB  */  //var eventName = "ApplicationStatusUpdateBefore";
 /* ASUA  */  //var eventName = "ApplicationStatusUpdateAfter";
-/* WTUA */  //var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
+/* WTUA */  var eventName = "WorkflowTaskUpdateAfter"; wfTask = "taskName"; wfStatus = "taskStatus"; wfDateMMDDYYYY = "01/01/2016";
 /* WTUB */  //var eventName = "WorkflowTaskUpdateBefore"; wfTask = "taskName"; wfStatus = "taskStatus";  wfDateMMDDYYYY = "01/01/2016";
 /* IRSA */  //var eventName = "InspectionResultSubmitAfter"; inspResult = "result"; inspResultComment = "comment";  inspType = "inspName"; wfTask = "taskName";
 /* ISA  */  //var eventName = "InspectionScheduleAfter"; inspType = "inspName";
@@ -57,6 +57,7 @@ try {
 			var thisTask = wfObj[i]; logDebug(" ---------- "+wfObjCount+" ---------- ");
 			var thisActiveFlag = thisTask.getActiveFlag(); logDebug("   ActiveFlag: "+thisActiveFlag);
 			var thisAssignedStaff = thisTask.getAssignedStaff(); logDebug("   AssignedStaff: "+thisAssignedStaff);
+			var assignedUserId = aa.person.getUser(thisAssignedStaff.getFirstName(),thisAssignedStaff.getMiddleName(),thisAssignedStaff.getLastName()).getOutput().getUserID(); logDebug("   assignedUserId: "+assignedUserId);
 			var thisAssignmentDate = thisTask.getAssignmentDate(); logDebug("   AssignmentDate: "+thisAssignmentDate);
 			if(thisAssignmentDate){
 				logDebug("   AssignmentDate: "+thisAssignmentDate.month+"/"+thisAssignmentDate.dayOfMonth+"/"+thisAssignmentDate.year);
