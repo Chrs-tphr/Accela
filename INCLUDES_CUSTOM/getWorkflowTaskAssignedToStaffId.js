@@ -9,8 +9,15 @@ function getWorkflowTaskAssignedToStaffId(taskName){//optional param to specify 
 		for(i in wfObj){
 			var thisTask = wfObj[i];
 			if(thisTask.getTaskDescription() == taskName){
-				var assignedUserId = aa.person.getUser(thisTask.getAssignedStaff().getFirstName(),thisTask.getAssignedStaff().getMiddleName(),thisTask.getAssignedStaff().getLastName()).getOutput().getUserID();
-				logDebug("   assignedUserId: "+assignedUserId);
+				var asfn = thisTask.getAssignedStaff().getFirstName();
+				var asmn = thisTask.getAssignedStaff().getMiddleName();
+				var asln = thisTask.getAssignedStaff().getLastName();
+				if(asfn && asln){
+					var atsid = aa.person.getUser(asfn,asmn,asln).getOutput().getUserID();
+					logDebug("   assignedUserId: "+atsid);
+				}else{
+					logDebug(taskName+" is not assigned");
+				}
 			}
 		}
 	}
