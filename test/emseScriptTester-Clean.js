@@ -1,4 +1,4 @@
-var myCapId = "";
+var myCapId = "EQP-20180340"; //"INCOMPLETE APP-20180571";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -29,7 +29,8 @@ try {
 	showDebug = true;
 //INSERT TEST CODE START
 	
-	function viewObj(obj){
+	function viewObj(log, obj){
+		logDebug("---- "+log+" start ----");
 		var outputArray = [];
 		for(var key in obj){
 			if(typeof obj[key] == 'function')
@@ -41,6 +42,7 @@ try {
 		for(i=1;i<outputArray.length;i++){
 			logDebug(outputArray[i]);
 		}
+		logDebug("---- "+log+" end ----");
 	}
 	
 	function elapsed(){
@@ -48,6 +50,8 @@ try {
 		var thisTime = thisDate.getTime();
 		return ((thisTime - startTime) / 1000)
 	}
+	
+	
 	
 	
 //INSERT TEST CODE END
