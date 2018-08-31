@@ -1,4 +1,4 @@
-var myCapId = "EQP-20180340"; //"INCOMPLETE APP-20180571";
+var myCapId = "replaceWithAltId";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
