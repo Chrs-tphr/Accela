@@ -1,4 +1,4 @@
-var myCapId = "";
+var myCapId = "EQP-20180340"; //"INCOMPLETE APP-20180571";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -51,89 +51,61 @@ try {
 		return ((thisTime - startTime) / 1000)
 	}
 	
-	//------------variables--------------//
-	
-	var startDate = new Date();
-	var startTime = startDate.getTime();
-	var maxSeconds = 60;
-	
-	var incCapArr = [];
-	var incCapCount = 0;
-	var activeRecs = 0;
+//	viewObj("capId",capId);
 
-	//------------variables--------------//
+	var capModel = aa.cap.getCapByPK(capId,true).getOutput(); //*Class = CapModel*/ viewObj("capModel", capModel);
 	
+	logDebug(br+"altId|"+capModel.getAltID()+"|File Date|"+capModel.getFileDate()+"|Cap Class|"+capModel.getCapClass()+"|Audit Status|"+capModel.getAuditStatus()+"|Complete|"+capModel.isCompleteCap());
 	
-	///*
+	var capScriptModel = aa.cap.getCap(capId).getOutput(); //*Class = CapScriptModel*/ viewObj("capScriptModel", capScriptModel);
 	
+	var activeRecs = 0;
+	var incCapCount = 0;
 	
-	
-	var capListSR = aa.cap.getCapIDList();
-	if(capListSR.getSuccess()){
-		var capList = capListSR.getOutput();
-		var capListLength = capList.length;
-		logDebug("capListLength: "+capListLength);
-		if(capListLength > 0){
-			for(i=0; i<capListLength; i++){
-				var rTime = elapsed();
-				if (rTime > maxSeconds) { // only continue if time hasn't expired
-					logDebug("WARNING","A script timeout has caused partial completion of this process.  Please re-run.  " + rTime + " seconds elapsed, " + maxSeconds + " allowed.") ;
-					timeExpired = true;
-					break;
-				}
-				
-				var thisCap = capList[i]; //*Class = CapIDScriptModel*/ viewObj("thisCap", thisCap);
-				
-				var capId = aa.cap.getCapID(thisCap.getID1(), thisCap.getID2(), thisCap.getID3()).getOutput(); //*Class = CapIDModel*/ viewObj("capId", capId);
-				
-				var capModel = aa.cap.getCapByPK(thisCap.getCapID(),true).getOutput(); //*Class = CapModel*/ viewObj("capModel", capModel);
-				
-//				var capScriptModel = aa.cap.getCap(capId).getOutput(); /*Class = CapScriptModel*/ viewObj("capScriptModel", capScriptModel);
-				
-//				break;
-				
-				if(capModel){
-					activeRecs++;
-//					if(incCapCount > 10)break;
-//					if(capModel.getAuditStatus() != "A")continue;
-					if(capModel.isCompleteCap())continue;
-					if(!matches(capModel.getCapClass(),"INCOMPLETE CAP","INCOMPLETE EST"))continue;
-//					if(!capModel.getCreatedByACA())continue;
-					
-					var puId = capModel.getCreatedBy();
-					viewObj("puId",puId);
-					
-					//send same email to applicant
-//					sendNotification();
-					
-					//use this section when sending multiple email versions
-					/*if(matches(capModel.getCapClass(),"INCOMPLETE CAP"){
-						//send specific email for incomplete apps
-					}else{
-						//send specific email for submitted apps that have fees due
-					}*/
-					
-					
-					logDebug(br+"altId|"+capModel.getAltID()+"|File Date|"+capModel.getFileDate()+"|Cap Class|"+capModel.getCapClass()+"|Audit Status|"+capModel.getAuditStatus()+"|Complete|"+capModel.isCompleteCap());
-					
-					//get email address
-//					sendNotification();
-					incCapCount++;
-				}
-			}
+	if(capModel){
+		activeRecs++;
+//		if(capModel.getAuditStatus() != "A")continue;
+//		if(capModel.isCompleteCap())continue;
+//		if(!matches(capModel.getCapClass(),"INCOMPLETE CAP","INCOMPLETE EST"))continue;
+//		if(!capModel.getCreatedByACA())continue;
+		
+		var puId = capModel.getCreatedBy(); //get submitted by userid
+		var uid = aa.person.getUser(puId).getOutput(); //get sysuser by userid
+		var uEmail = uid.getEmail(); //gets submitted by email
+		var aTypeAlias = capModel.getAppTypeAlias();
+
+		logDebug("aTypeAlias: "+aTypeAlias);
+		logDebug("uEmail: "+uEmail);
+		
+		if(!matches(uEmail,null,"",undefined)) {
 			
-			logDebug("RunTime: "+rTime+", Checked: "+i+" of "+capListLength+" records, found "+incCapCount+" Incomplete of "+activeRecs+" Active records");
+			var eParams = aa.util.newHashtable();
+			addParameter(eParams, "$$recordType$$", aTypeAlias);
 			
-		}else{
-			logDebug("ERROR no caps in list");
+			var emailCC = "";
+			var reportFile = new Array();
+			
+			itemCap = capId;
+			
+			
+			sendNotification(agencyEmailFrom, "cisensano@yahoo.com", "","ACA_INCOMPLETE_CAP", eParams, null);
+//			aa.document.sendEmailAndSaveAsDocument(agencyEmailFrom, uEmail, "", "ACA_INCOMPLETE_CAP", eParams, capScriptModel, reportFile);
+//			aa.document.sendEmailByTemplateName(agencyEmailFrom, uEmail, "", "ACA_INCOMPLETE_CAP", eParams, null);
+			
+//			var result = null;
+//			result = aa.document.sendEmailAndSaveAsDocument(agencyEmailFrom, uEmail, emailCC, "ACA_INCOMPLETE_CAP", eParams, capScriptModel, reportFile);
+//			if(result.getSuccess()){
+//				logDebug("Sent email successfully!");
+//			}else{
+//				logDebug("Failed to send mail. - " + result.getErrorType());
+//			}
+//		}else{
+//			logDebug("No email address found for logged in user");
 		}
-	}else{
-		logDebug("ERROR no capListSR");
+//		viewObj("uid",uid);
+		incCapCount++;
+		logDebug("activeRecs: "+activeRecs)
 	}
-	
-	
-	
-	//*/
 	
 	
 //INSERT TEST CODE END

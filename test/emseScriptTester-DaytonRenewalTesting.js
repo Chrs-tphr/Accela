@@ -1,4 +1,4 @@
-var myCapId = "";
+var myCapId = "RNWL-2018-00309";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -51,89 +51,50 @@ try {
 		return ((thisTime - startTime) / 1000)
 	}
 	
-	//------------variables--------------//
 	
-	var startDate = new Date();
-	var startTime = startDate.getTime();
-	var maxSeconds = 60;
+	var slhn = AInfo["State License Holder's Name"];
+	var soocln = AInfo["State of Ohio Contractor's License Number"];
+	var sooled = AInfo["State of Ohio License Expiration Date"];
+	var be = AInfo["Bond Expiration"];
+	var coled = AInfo["Certificate of Liability Expiration Date"];
 	
-	var incCapArr = [];
-	var incCapCount = 0;
-	var activeRecs = 0;
-
-	//------------variables--------------//
+	//Update LP
+	var lic = getRefLicenseProf("1424");//LIC2000-00693
 	
-	
-	///*
-	
-	
-	
-	var capListSR = aa.cap.getCapIDList();
-	if(capListSR.getSuccess()){
-		var capList = capListSR.getOutput();
-		var capListLength = capList.length;
-		logDebug("capListLength: "+capListLength);
-		if(capListLength > 0){
-			for(i=0; i<capListLength; i++){
-				var rTime = elapsed();
-				if (rTime > maxSeconds) { // only continue if time hasn't expired
-					logDebug("WARNING","A script timeout has caused partial completion of this process.  Please re-run.  " + rTime + " seconds elapsed, " + maxSeconds + " allowed.") ;
-					timeExpired = true;
-					break;
-				}
-				
-				var thisCap = capList[i]; //*Class = CapIDScriptModel*/ viewObj("thisCap", thisCap);
-				
-				var capId = aa.cap.getCapID(thisCap.getID1(), thisCap.getID2(), thisCap.getID3()).getOutput(); //*Class = CapIDModel*/ viewObj("capId", capId);
-				
-				var capModel = aa.cap.getCapByPK(thisCap.getCapID(),true).getOutput(); //*Class = CapModel*/ viewObj("capModel", capModel);
-				
-//				var capScriptModel = aa.cap.getCap(capId).getOutput(); /*Class = CapScriptModel*/ viewObj("capScriptModel", capScriptModel);
-				
-//				break;
-				
-				if(capModel){
-					activeRecs++;
-//					if(incCapCount > 10)break;
-//					if(capModel.getAuditStatus() != "A")continue;
-					if(capModel.isCompleteCap())continue;
-					if(!matches(capModel.getCapClass(),"INCOMPLETE CAP","INCOMPLETE EST"))continue;
-//					if(!capModel.getCreatedByACA())continue;
-					
-					var puId = capModel.getCreatedBy();
-					viewObj("puId",puId);
-					
-					//send same email to applicant
-//					sendNotification();
-					
-					//use this section when sending multiple email versions
-					/*if(matches(capModel.getCapClass(),"INCOMPLETE CAP"){
-						//send specific email for incomplete apps
-					}else{
-						//send specific email for submitted apps that have fees due
-					}*/
-					
-					
-					logDebug(br+"altId|"+capModel.getAltID()+"|File Date|"+capModel.getFileDate()+"|Cap Class|"+capModel.getCapClass()+"|Audit Status|"+capModel.getAuditStatus()+"|Complete|"+capModel.isCompleteCap());
-					
-					//get email address
-//					sendNotification();
-					incCapCount++;
-				}
-			}
-			
-			logDebug("RunTime: "+rTime+", Checked: "+i+" of "+capListLength+" records, found "+incCapCount+" Incomplete of "+activeRecs+" Active records");
-			
-		}else{
-			logDebug("ERROR no caps in list");
+	if (lic != null){
+//		lic.setLicenseExpirationDate(aa.date.parseDate(newExpireDate))
+//		lic.setLicenseLastRenewalDate(aa.date.getCurrentDate())	
+		
+		if(!matches(typeof(slhn),"undefined",null)){//State License Holder's Name
+			logDebug("slhn: "+slhn);
+//			lic.set(slhn);
 		}
+		if(!matches(typeof(soocln),"undefined",null)){//State of Ohio Contractor's License Number
+			logDebug("soocln: "+soocln);
+			lic.setBusinessLicense(soocln);
+		}
+		if(!matches(typeof(sooled),"undefined",null)){//State of Ohio License Expiration Date
+			logDebug("sooled: "+sooled);
+			lic.setBusinessLicExpDate(aa.date.parseDate(sooled));
+		}
+		if(!matches(typeof(be),"undefined",null)){//Bond Expiration
+			logDebug("be: "+be);
+			lic.setInsuranceExpDate(aa.date.parseDate(be));
+		}
+		if(!matches(typeof(coled),"undefined",null)){//Certificate of Liability Expiration Date
+			logDebug("coled: "+coled);
+			lic.setWcExpDate(aa.date.parseDate(coled));
+		}
+		
+//		aa.licenseScript.editRefLicenseProf(lic);
 	}else{
-		logDebug("ERROR no capListSR");
+		logDebug("Could not get LP");
 	}
 	
 	
 	
-	//*/
+	
+	
 	
 	
 //INSERT TEST CODE END

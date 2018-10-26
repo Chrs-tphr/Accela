@@ -1,4 +1,4 @@
-var myCapId = "";
+var myCapId = "BLD18-00946";
 var myUserId = "ADMIN";
 
 /* ASB  */  //var eventName = "ApplicationSubmitBefore";
@@ -51,89 +51,71 @@ try {
 		return ((thisTime - startTime) / 1000)
 	}
 	
-	//------------variables--------------//
-	
-	var startDate = new Date();
-	var startTime = startDate.getTime();
-	var maxSeconds = 60;
-	
-	var incCapArr = [];
-	var incCapCount = 0;
-	var activeRecs = 0;
+	var contactTypesArray = new Array("Applicant");
+	var contactObjArray = getContactObjs(capId,contactTypesArray);
 
-	//------------variables--------------//
-	
-	
-	///*
-	
-	
-	
-	var capListSR = aa.cap.getCapIDList();
-	if(capListSR.getSuccess()){
-		var capList = capListSR.getOutput();
-		var capListLength = capList.length;
-		logDebug("capListLength: "+capListLength);
-		if(capListLength > 0){
-			for(i=0; i<capListLength; i++){
-				var rTime = elapsed();
-				if (rTime > maxSeconds) { // only continue if time hasn't expired
-					logDebug("WARNING","A script timeout has caused partial completion of this process.  Please re-run.  " + rTime + " seconds elapsed, " + maxSeconds + " allowed.") ;
-					timeExpired = true;
-					break;
-				}
+	if(contactObjArray.length > 0){
+		for (iCon in contactObjArray) {
+			var tContactObj = contactObjArray[iCon];
+			logDebug("Contact Name: " + tContactObj.people.getFirstName() + " " + tContactObj.people.getLastName());
+			if(!matches(tContactObj.people.getEmail(),null,undefined,"")) {
+				logDebug("Contact Email: " + tContactObj.people.getEmail());
+//				var eParams = aa.util.newHashtable();
+//				addParameter(eParams, "$$InspectionType$$", type);
+//				addParameter(eParams, "$$EmailBody$$", emailBody);
+//				addParameter(eParams, "$$recordTypeAlias$$", cap.getCapType().getAlias());
+//				if(matches(tContactObj.people.getFirstName(),null,undefined,"") || (tContactObj.people.getLastName(),null,undefined,"")) {
+//					addParameter(eParams, "$$ApplicantFullName$$", tContactObj.people.getFullName());
+//				} else {
+//					addParameter(eParams, "$$ApplicantFullName$$", tContactObj.people.getFirstName() + " " + tContactObj.people.getLastName());
+//				}
+//				getRecordParams4Notification(eParams);
+//				tContactObj.getEmailTemplateParams(eParams);
+//				getPrimaryAddressLineParam4Notification(eParams);
+//				getContactParams4Notification(eParams,contactTypesArray);
 				
-				var thisCap = capList[i]; //*Class = CapIDScriptModel*/ viewObj("thisCap", thisCap);
-				
-				var capId = aa.cap.getCapID(thisCap.getID1(), thisCap.getID2(), thisCap.getID3()).getOutput(); //*Class = CapIDModel*/ viewObj("capId", capId);
-				
-				var capModel = aa.cap.getCapByPK(thisCap.getCapID(),true).getOutput(); //*Class = CapModel*/ viewObj("capModel", capModel);
-				
-//				var capScriptModel = aa.cap.getCap(capId).getOutput(); /*Class = CapScriptModel*/ viewObj("capScriptModel", capScriptModel);
-				
-//				break;
-				
-				if(capModel){
-					activeRecs++;
-//					if(incCapCount > 10)break;
-//					if(capModel.getAuditStatus() != "A")continue;
-					if(capModel.isCompleteCap())continue;
-					if(!matches(capModel.getCapClass(),"INCOMPLETE CAP","INCOMPLETE EST"))continue;
-//					if(!capModel.getCreatedByACA())continue;
-					
-					var puId = capModel.getCreatedBy();
-					viewObj("puId",puId);
-					
-					//send same email to applicant
-//					sendNotification();
-					
-					//use this section when sending multiple email versions
-					/*if(matches(capModel.getCapClass(),"INCOMPLETE CAP"){
-						//send specific email for incomplete apps
-					}else{
-						//send specific email for submitted apps that have fees due
-					}*/
-					
-					
-					logDebug(br+"altId|"+capModel.getAltID()+"|File Date|"+capModel.getFileDate()+"|Cap Class|"+capModel.getCapClass()+"|Audit Status|"+capModel.getAuditStatus()+"|Complete|"+capModel.isCompleteCap());
-					
-					//get email address
-//					sendNotification();
-					incCapCount++;
-				}
+//				sendNotification(agencyReplyEmail,tContactObj.people.getEmail(),"","BLD_SCHEDULED_INSPECTION_REMINDER",eParams,null);
 			}
-			
-			logDebug("RunTime: "+rTime+", Checked: "+i+" of "+capListLength+" records, found "+incCapCount+" Incomplete of "+activeRecs+" Active records");
-			
-		}else{
-			logDebug("ERROR no caps in list");
 		}
-	}else{
-		logDebug("ERROR no capListSR");
 	}
 	
+	// Provide the professional types to send this notification
+	var profTypesArray = new Array("Contractor");
 	
+	// Get an array of Professional Objects
+	var profObjArray = getLicenseProfessional(capId); logDebug("profObjArray: "+profObjArray);
+	if(profObjArray.length > 0){
+		for(ea in profObjArray){
+			if(profObjArray[ea].getLicenseType() != "Contractor") continue;
+			if(matches(profObjArray[ea].getEmail(),null,"null")) continue;
+			var thisLPEmail = profObjArray[ea].getEmail();
+			if(thisLPEmail)
+			logDebug("thisLP: "+thisLP);
+			viewObj("thisLP",thisLP);
+		}
+	}
 	
-	//*/
+	licenseProfObject(licProfScriptModel.getLicenseNbr(), profTypesArray);
+	
+	if(profObjArray.length > 0){
+		for (iProf in profObjArray) {
+			var tProfObj = profObjArray[iProf];
+			//logDebug("LP Name: " + tProfObj.people.getFirstName() + " " + tProfObj.people.getLastName());
+			var vProfObj = new licenseProfObject(tProfObj.getLicenseNbr());
+			logDebug("LP Email: " + vProfObj.refLicModel.getEMailAddress());
+			if(!matches(vProfObj.refLicModel.getEMailAddress(),null,undefined,"")) {
+				logDebug("LP Email: " + vProfObj.refLicModel.getEMailAddress());
+//				var eParams = aa.util.newHashtable();
+//				addParameter(eParams, "$$recordTypeAlias$$", cap.getCapType().getAlias());
+//				getRecordParams4Notification(eParams);
+//				getACARecordParam4Notification(eParams,acaURL);
+//				vProfObj.getEmailTemplateParams(eParams);
+//				getPrimaryAddressLineParam4Notification(eParams);
+				
+//				sendNotification(agencyReplyEmail,vProfObj.refLicModel.getEMailAddress(),"",notificationTemplate,eParams,null);
+			} 
+		}
+	}
 	
 	
 //INSERT TEST CODE END
